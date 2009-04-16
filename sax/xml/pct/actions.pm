@@ -24,6 +24,15 @@ method TOP($/) {
 
 # 1
 method document($/, $key) {
+    our %entities;
+    if ( $key eq 'start_document' ) {
+        # predefined entities
+        %entities{'lt'} := '<';
+        %entities{'gt'} := '>';
+        %entities{'amp'} := '&';
+        %entities{'apos'} := "'";
+        %entities{'quot'} := '"';
+    }
     fire( $key );
     make PCT::Node.new();
 }
@@ -122,8 +131,10 @@ method Reference($/, $key) {
 
 # 68
 method EntityRef($/) {
+    our %entities;
     fire( 'entity_reference',
-          :Name( $<Name> ) );
+          :Name( $<Name> ),
+          :Value( %entities{$<Name>} ) );
     make PCT::Node.new();
 }
 
