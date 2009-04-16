@@ -3,13 +3,20 @@
 class Xml::Handler::XmlWriter;
 
 method start_document() {
+    our $in_cdata := 0;
 }
 
 method end_document() {
 }
 
 method characters( :$Data ) {
-    print( $Data );
+    our $in_cdata;
+    if $in_cdata {
+        print( $Data );
+    }
+    else {
+        print( escape( $Data ) );
+    }
 }
 
 method comment( :$Data ) {
@@ -25,9 +32,13 @@ method processing_instruction( :$Target, :$Data ) {
 }
 
 method start_cdata() {
+    our $in_cdata := 1;
+    print( '<![CDATA[' );
 }
 
 method end_cdata() {
+    our $in_cdata := 0;
+    print( ']]>' );
 }
 
 method xml_decl( :$Version, :$Encoding, :$Standalone ) {

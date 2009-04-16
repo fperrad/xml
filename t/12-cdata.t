@@ -20,7 +20,7 @@ use Test::More;
 language_output_is( 'xml', <<'CODE', <<'OUT', 'cdata' );
 <elt><![CDATA[content]]></elt>
 CODE
-<elt>content</elt>
+<elt><![CDATA[content]]></elt>
 OUT
 
 # Local Variables:
