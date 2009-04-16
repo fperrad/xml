@@ -118,9 +118,8 @@ method EmptyElemTag($/) {
 
 # 66
 method CharRef($/, $key) {
-    my $char := 'TODO';
     fire( 'characters',
-          :Data( $char ) );
+          :Data( char_ref( $key, $/[0] ) ) );
     make PCT::Node.new();
 }
 

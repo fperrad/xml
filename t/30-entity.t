@@ -14,13 +14,25 @@ use warnings;
 use FindBin;
 use lib "$FindBin::Bin/../../../lib", "$FindBin::Bin";
 
-use Parrot::Test tests => 1;
+use Parrot::Test tests => 3;
 use Test::More;
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'start/end' );
+language_output_is( 'xml', <<'CODE', <<'OUT', 'prefined entity' );
 <elt>2 &gt; 1</elt>
 CODE
 <elt>2 &gt; 1</elt>
+OUT
+
+language_output_is( 'xml', <<'CODE', <<'OUT', 'character reference (dec)' );
+<elt> &#65; </elt>
+CODE
+<elt> A </elt>
+OUT
+
+language_output_is( 'xml', <<'CODE', <<'OUT', 'character reference (hex)' );
+<elt> &#x41; </elt>
+CODE
+<elt> A </elt>
 OUT
 
 # Local Variables:
