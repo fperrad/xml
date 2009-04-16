@@ -52,8 +52,11 @@ method xml_decl( :$Version, :$Encoding, :$Standalone ) {
     print( '?>' )
 }
 
-method start_element( :$Name, :$Attributes ) {
+method start_element( :$Name, :%Attributes ) {
     print( '<', $Name );
+    for %Attributes {
+        print( ' ', $_, '="', escape( %Attributes{$_} ), '"' );
+    }
     print( '>' );
 }
 

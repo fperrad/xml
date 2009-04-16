@@ -14,7 +14,7 @@ use warnings;
 use FindBin;
 use lib "$FindBin::Bin/../../../lib", "$FindBin::Bin";
 
-use Parrot::Test tests => 2;
+use Parrot::Test tests => 4;
 use Test::More;
 
 language_output_is( 'xml', <<'CODE', <<'OUT', 'start/end' );
@@ -23,10 +23,22 @@ CODE
 <elt>content</elt>
 OUT
 
+language_output_is( 'xml', <<'CODE', <<'OUT', 'start/end with attributes' );
+<elt a="1" b='txt' >content</elt  >
+CODE
+<elt a="1" b="txt">content</elt>
+OUT
+
 language_output_is( 'xml', <<'CODE', <<'OUT', 'empty' );
 <elt  />
 CODE
 <elt></elt>
+OUT
+
+language_output_is( 'xml', <<'CODE', <<'OUT', 'empty with attribute' );
+<elt a='1' />
+CODE
+<elt a="1"></elt>
 OUT
 
 # Local Variables:
