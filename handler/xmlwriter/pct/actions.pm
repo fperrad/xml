@@ -31,7 +31,6 @@ method end_cdata() {
 }
 
 method xml_decl( :$Version, :$Encoding, :$Standalone ) {
-    print( "xml_decl", " ", $Version, " ", $Encoding, " ", $Standalone );
     print( '<?xml version="', $Version, '"' );
     if ?$Encoding {
         print( ' encoding="', $Encoding, '"' );
