@@ -1,0 +1,16 @@
+
+XML on Parrot
+=============
+
+This module contains :
+ * a SAX like parser
+ * a simple handler XmlWriter
+
+There are toys, but there demonstrate the power of PCT,
+the Parrot Compiler Toolkit.
+
+But PCT is not handly for packaging & deployment.
+
+Now, XML modules could easy implemented with Perl 6,
+because with PCT, most of the code is already Perl 6.
+

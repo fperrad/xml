@@ -1,0 +1,251 @@
+# Copyright (C) 2009, Parrot Foundation.
+
+=pod
+
+This is the grammar for Xml written as a sequence of Perl 6 rules.
+
+See Extensible Markup Language (XML) 1.0,
+L<http://www.w3.org/TR/2000/REC-xml-20001006>
+
+=cut
+
+grammar Xml::Sax::Xml::Grammar is PCT::Grammar;
+
+=head1 Documents
+
+=head2 Well-Formed XML Documents
+
+=cut
+
+token TOP {
+    ^ <document>
+    [ $ || <panic: 'Syntax error'> ]
+    {*}
+}
+
+# 1
+token document {
+    {*}                         #= start_document
+    <prolog> <element> <Misc>*
+    {*}                         #= end_document
+}
+
+=head2 Characters
+
+=cut
+
+# 2
+token Char {
+    <[\x9\xA\xD\x20..\xFF]>
+}
+
+=head2 Common Syntactic Construct
+
+=cut
+
+# 3
+token S {
+    <[\x20\x9\xD\xA]>+
+}
+
+# 5
+token Name {
+    <[\x41..\x5A\x61..\x7A\xC0..\xD6\xD8..\xF6\xF8..\xFF_:]>
+    <[\x41..\x5A\x61..\x7A\xC0..\xD6\xD8..\xF6\xF8..\xFF\x30..\x39.\-_:\xB7]>*
+}
+
+# 10
+token AttValue {
+      \" ( <-[<&"]>* ) \"
+    | \' ( <-[<&']>* ) \'
+}
+
+=head2 Character Data and Markup
+
+=cut
+
+# 14
+token CharData {
+    [ <!CDEnd> <-[<&]> ] *
+    {*}
+}
+
+=head2 Comments
+
+=cut
+
+# 15
+token Comment {
+    '<!--' ( [ <!_hyphen> <.Char> | '-' [ <!_hyphen> <.Char> ] ]* ) '-->'
+    {*}
+}
+
+token _hyphen {
+    '-'
+}
+
+=head2 Processing Instruction
+
+=cut
+
+# 16
+token PI {
+    '<?' <PITarget> [ <.S> $<Data>=[ <!_PI> <.Char> ]* ]? '?>'
+    {*}
+}
+
+token _PI { '?>' }
+
+# 17
+token PITarget {
+    <!_xml> <.Name>
+}
+
+token _xml { <[Xx]> <[Mm]> <[Ll]> }
+
+=head2 CDATA Sections
+
+=cut
+
+# 18
+token CDSect {
+    '<![CDATA[' <CData> <.CDEnd>
+    {*}
+}
+
+# 20
+token CData {
+    [ <!CDEnd> <.Char> ]*
+}
+
+# 21
+token CDEnd {
+    ']]>'
+}
+
+=head2 Prolog and Document Type Declaration
+
+=cut
+
+# 22
+token prolog {
+#    <XMLDecl>? <Misc>* [ <doctypedecl> <Misc>* ]?
+    <XMLDecl>? <Misc>*
+}
+
+# 23
+token XMLDecl {
+    '<?xml' <VersionInfo> <EncodingDecl>? <SDDecl>? <.S>? '?>'
+    {*}
+}
+
+# 24
+token VersionInfo {
+    <.S> version <.Eq> [ \' <VersionNum> \' | \" <VersionNum> \" ]
+}
+
+# 25
+token Eq {
+    <.S>? '=' <.S>?
+}
+
+# 26
+token VersionNum {
+    <[a..zA..Z0..9_.:\-]>+
+}
+
+# 27
+token Misc {
+      <Comment>
+    | <PI>
+    | <.S>
+}
+
+=head2 Standalone Document Declaration
+
+=cut
+
+# 32
+token SDDecl {
+    <.S> standalone <.Eq> [ \' <_yes_no> \' | \" <_yes_no> \" ]
+}
+
+token _yes_no {
+    [yes|no]
+}
+
+=head1 Logical Structures
+
+=cut
+
+# 39
+token element {
+      <EmptyElemTag>
+    | <STag> <content> <ETag>
+}
+
+=head2 Start-Tags, End-Tags, and Empty-Element Tags
+
+=cut
+
+# 40
+token STag {
+    '<' <Name> [ <.S> <Attribute> ]* <.S>? '>'
+    {*}
+}
+
+# 41
+token Attribute {
+    <Name> <.Eq> <AttValue>
+}
+
+# 42
+token ETag {
+    '</' <Name> <.S>? '>'
+    {*}
+}
+
+# 43
+token content {
+    <CharData>? [ [ <element> | <Reference> | <CDSect> | <PI> | <Comment> ] <CharData>? ]*
+}
+
+# 44
+token EmptyElemTag {
+    '<' <Name> [ <.S> <Attribute> ]* <.S>? '/>'
+    {*}
+}
+
+=head1 Physical Structures
+
+=head2 Character and Entity References
+
+=cut
+
+# 66
+token CharRef {
+      '&#' ( <[0..9]>+ ) ';' {*}                #= dec
+    | '&#x' ( <[0..9a..fA..F]>+ ) ';' {*}       #= hex
+}
+
+# 67
+token Reference {
+      <EntityRef> {*}           #= EntityRef
+    | <CharRef> {*}             #= CharRef
+}
+
+# 68
+token EntityRef {
+    '&' <Name> ';'
+    {*}
+}
+
+# 80
+token EncodingDecl {
+    <.S> encoding <.Eq> [ \" <EncName> \" | \' <EncName> \' ]
+}
+
+# 81
+token EncName {
+    <[A..Za..z]> <[A..Za..z0..9._\-]>*
+}
