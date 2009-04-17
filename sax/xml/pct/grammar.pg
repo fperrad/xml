@@ -502,11 +502,12 @@ token EncName {
 
 # 82
 token NotationDecl {
-    '<!NOTATION' <.S> <Name> <.S> [ <ExternalID> | <PublicID> ] <.S>? '>'
+    '<!NOTATION' <.S> <Name> <.S> <_NotationID> <.S>? '>'
+    {*}
 }
 
-# 83
-token PublicID {
-    'PUBLIC' <.S> <PubidLiteral>
+token _NotationID {
+      'SYSTEM' <.S> <SystemLiteral>
+    | 'PUBLIC' <.S> <PubidLiteral> <.S> <SystemLiteral>
+    | 'PUBLIC' <.S> <PubidLiteral>
 }
-

@@ -173,6 +173,20 @@ method EntityRef($/) {
     make PCT::Node.new();
 }
 
+# 82
+method NotationDecl($/) {
+    fire( 'notation_decl',
+          :Name( $<Name> ),
+          :PublicId( $<_NotationID><PubidLiteral>
+                  ?? $<_NotationID><PubidLiteral>[0]
+                  !! '' ),
+          :SystemId( $<_NotationID><SystemLiteral>
+                  ?? $<_NotationID><SystemLiteral>[0]
+                  !! '' ),
+          :Base( 'TODO' ) );
+    make PCT::Node.new();
+}
+
 # Local Variables:
 #   mode: cperl
 #   cperl-indent-level: 4

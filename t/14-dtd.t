@@ -14,7 +14,7 @@ use warnings;
 use FindBin;
 use lib "$FindBin::Bin/../../../lib", "$FindBin::Bin";
 
-use Parrot::Test tests => 3;
+use Parrot::Test tests => 4;
 use Test::More;
 
 language_output_is( 'xml', <<'CODE', <<'OUT', 'system' );
@@ -44,6 +44,19 @@ CODE
 <?xml version="1.0"?><!DOCTYPE greeting [
     <!ELEMENT greeting (#PCDATA)>
     <!ATTLIST greeting id ID #IMPLIED>
+]><greeting>Hello, world!</greeting>
+OUT
+
+language_output_is( 'xml', <<'CODE', <<'OUT', 'notation' );
+<?xml version='1.0'?><!DOCTYPE greeting [
+    <!ELEMENT greeting (#PCDATA)>
+    <!NOTATION note SYSTEM "note.txt">
+] >
+<greeting>Hello, world!</greeting>
+CODE
+<?xml version="1.0"?><!DOCTYPE greeting [
+    <!ELEMENT greeting (#PCDATA)>
+    <!NOTATION note SYSTEM "note.txt">
 ]><greeting>Hello, world!</greeting>
 OUT
 

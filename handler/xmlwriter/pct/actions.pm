@@ -90,6 +90,9 @@ method entity_reference( :$Name, :$Value ) {
     print( '&', $Name, ';' );
 }
 
+method notation_decl( :$Name, :$PublicId, :$SystemId, :$Base ) {
+}
+
 # Local Variables:
 #   mode: cperl
 #   cperl-indent-level: 4
