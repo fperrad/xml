@@ -83,6 +83,9 @@ method end_element( :$Name ) {
 method element_decl( :$Name, :$Model ) {
 }
 
+method attlist_decl( :$ElementName, :$AttributeName, :$Type, :$Fixed) {
+}
+
 method entity_reference( :$Name, :$Value ) {
     print( '&', $Name, ';' );
 }

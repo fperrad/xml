@@ -326,6 +326,7 @@ token Mixed {
 # 52
 token AttlistDecl {
     '<!ATTLIST' <.S> <Name> <AttDef>* <.S>? '>'
+    {*}
 }
 
 # 53

@@ -140,6 +140,18 @@ method elementdecl($/) {
     make PCT::Node.new();
 }
 
+# 52
+method AttlistDecl($/) {
+    for ( $<AttDef> ) {
+        fire( 'attlist_decl',
+              :ElementName( $<Name> ),
+              :AttributeName( $_<Name> ),
+              :Type( $_<AttType> ),
+              :Fixed( $_<DefaultDecl> ) );
+    }
+    make PCT::Node.new();
+}
+
 # 66
 method CharRef($/, $key) {
     fire( 'characters',
