@@ -83,6 +83,22 @@ method XMLDecl($/) {
     make PCT::Node.new();
 }
 
+# 28
+method doctypedecl($/) {
+    fire( 'doctype_decl',
+          :Name( $<Name> ),
+          :SystemId( $<ExternalID>[0]<SystemLiteral>
+                  ?? $<ExternalID>[0]<SystemLiteral>[0]
+                  !! '' ),
+          :PublicId( $<ExternalID>[0]<PubidLiteral>
+                  ?? $<ExternalID>[0]<PubidLiteral>[0]
+                  !! '' ),
+          :Internal( $<Internal>
+                  ?? $<Internal>[0]
+                  !! '' ) );
+    make PCT::Node.new();
+}
+
 # 40
 method STag($/) {
     my %attr;

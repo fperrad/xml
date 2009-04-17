@@ -48,16 +48,47 @@ token S {
     <[\x20\x9\xD\xA]>+
 }
 
+# 4
+token NameChar {
+    <[\x41..\x5A\x61..\x7A\xC0..\xD6\xD8..\xF6\xF8..\xFF\x30..\x39.\-_:\xB7]>
+}
+
 # 5
 token Name {
-    <[\x41..\x5A\x61..\x7A\xC0..\xD6\xD8..\xF6\xF8..\xFF_:]>
-    <[\x41..\x5A\x61..\x7A\xC0..\xD6\xD8..\xF6\xF8..\xFF\x30..\x39.\-_:\xB7]>*
+    <[\x41..\x5A\x61..\x7A\xC0..\xD6\xD8..\xF6\xF8..\xFF_:]> <.NameChar>*
+}
+
+# 6
+token Names {
+    <Name> [ <.S> <Name> ]*
+}
+
+# 7
+token Nmtoken {
+    <NameChar>+
+}
+
+# 8
+token Nmtokens {
+    <Nmtoken> [ <.S> <Nmtoken> ]*
 }
 
 # 10
 token AttValue {
       \" ( <-[<&"]>* ) \"
     | \' ( <-[<&']>* ) \'
+}
+
+# 11
+token SystemLiteral {
+      \" ( <-["]>* ) \"
+    | \' ( <-[']>* ) \'
+}
+
+# 12
+token PubidLiteral {
+      \" <[a..zA..Z0..9\x20\xD\xA\-'()+,./:=?;!*#@$_%]>* \"
+    | \' <[a..zA..Z0..9\x20\xD\xA\-()+,./:=?;!*#@$_%]>* \'
 }
 
 =head2 Character Data and Markup
@@ -129,8 +160,7 @@ token CDEnd {
 
 # 22
 token prolog {
-#    <XMLDecl>? <Misc>* [ <doctypedecl> <Misc>* ]?
-    <XMLDecl>? <Misc>*
+    <XMLDecl>? <Misc>* [ <doctypedecl> <Misc>* ]?
 }
 
 # 23
@@ -159,6 +189,38 @@ token Misc {
       <Comment>
     | <PI>
     | <.S>
+}
+
+# 28
+token doctypedecl {
+    '<!DOCTYPE' <.S> <Name> [ <.S> <ExternalID> ]? <.S>?
+    [ '[' $<Internal>=[ <markupdecl> | <DeclSep> ]* ']' <.S>? ]? '>'
+    {*}
+}
+
+# 28a
+token DeclSep {
+    <PEReference> | <S>
+}
+
+# 29
+token markupdecl {
+      <elementdecl>
+    | <AttlistDecl>
+    | <EntityDecl>
+    | <NotationDecl>
+    | <PI>
+    | <Comment>
+}
+
+# 30
+token extSubset {
+    <TextDecl>? <extSubsetDecl>
+}
+
+# 31
+token extSubsetDecl {
+    [ <markupdecl> | <conditionalSect> | <DeclSep> ]*
 }
 
 =head2 Standalone Document Declaration
@@ -216,6 +278,128 @@ token EmptyElemTag {
     {*}
 }
 
+=head2 Element Type Declararions
+
+=cut
+
+# 45
+token elementdecl {
+    '<!ELEMENT' <.S> <Name> <.S> <contentspec> <.S>? '>'
+}
+
+# 46
+token contentspec {
+    'EMPTY' | 'ANY' | <Mixed> | <children>
+}
+
+# 47
+token children {
+    [ <choice> | <seq> ] <[?*+]>?
+}
+
+# 48
+token cp {
+    [ <Name> | <choice> | <seq> ] <[?*+]>?
+}
+
+# 49
+token choice {
+    '(' <.S>? <cp> [ <.S>? '|' <.S>? <cp> ]+ <.S>? ')'
+}
+
+# 50
+token seq {
+    '(' <.S>? <cp> [ <.S>? ',' <.S>? <cp> ]* <.S>? ')'
+}
+
+# 51
+token Mixed {
+      '(' <.S>? '#PCDATA' [ <.S>? '|' <.S>? <Name> ]* <.S>? ')*'
+    | '(' <.S>? '#PCDATA' <.S>? ')'
+}
+
+=head2 Attribute-List Declarations
+
+=cut
+
+# 52
+token AttlistDecl {
+    '<!ATTLIST' <.S> <Name> <AttDef>* <.S>? '>'
+}
+
+# 53
+token AttDef {
+    <.S> <Name> <.S> <AttType> <.S> <DefaultDecl>
+}
+
+# 54
+token AttType {
+    <StringType> | <TokenizedType> | <EnumeratedType>
+}
+
+# 55
+token StringType {
+    'CDATA'
+}
+
+# 56
+token TokenizedType {
+    'ID' | 'IDREF' | 'IDREFS' | 'ENTITY' | 'ENTITIES' | 'NMTOKEN' | 'NMTOKENS'
+}
+
+# 57
+token EnumeratedType {
+    <NotationType> | <Enumeration>
+}
+
+# 58
+token NotationType {
+    'NOTATION' <.S> '(' <.S>? <Name> [ <.S>? '|' <.S>? <Name> ]* <.S>? ')'
+}
+
+# 59
+token Enumeration {
+    '(' <.S>? <Nmtoken> [ <.S>? '|' <.S>? <Nmtoken> ]* <.S>? ')'
+}
+
+# 60
+token DefaultDecl {
+    '#REQUIRED' | '#IMPLIED' | [ '#FIXED' <.S> ]? <AttValue>
+}
+
+=head2 Conditional Sections
+
+=cut
+
+# 61
+token conditionalSect {
+    <includeSect> | <ignoreSect>
+}
+
+# 62
+token includeSect {
+    '<![' <.S>? 'INCLUDE' <.S>? '[' <extSubsetDecl> ']]>'
+}
+
+# 63
+token ignoreSect {
+    '<![' <.S>? 'IGNORE' <.S>? '[' <ignoreSectContents>* ']]>'
+}
+
+# 64
+token ignoreSectContents {
+    <Ignore> [ '<![' <ignoreSectContents> ']]>' <Ignore> ]*
+}
+
+# 65
+token Ignore {
+    [ <!_Ignore> <Char> ]*
+}
+
+token _Ignore {
+    '<![' | ']]>'
+}
+
 =head1 Physical Structures
 
 =head2 Character and Entity References
@@ -240,6 +424,66 @@ token EntityRef {
     {*}
 }
 
+# 69
+token PEReference {
+    '%' <Name> ';'
+}
+
+=head2 Entity Declarations
+
+=cut
+
+# 70
+token EntityDecl {
+      <GEDecl>
+    | <PEDecl>
+}
+
+# 71
+token GEDecl {
+    '<!ENTITY' <.S> <Name> <.S> <EntityDef> <.S>? '>'
+}
+
+# 72
+token PEDecl {
+    '<!ENTITY' <.S> '%' <.S> <Name> <.S> <PEDef> <.S>? '>'
+}
+
+# 73
+token EntityDef {
+    <EntityValue> | <ExternalID> <NDataDecl>?
+}
+
+# 74
+token PEDef {
+    <EntityValue> | <ExternalID>
+}
+
+# 75
+token ExternalID {
+      'SYSTEM' <.S> <SystemLiteral>
+    | 'PUBLIC' <.S> <PubidLiteral> <.S> <SystemLiteral>
+}
+
+# 76
+token NDataDecl {
+    <.S> 'NDATA' <.S> <Name>
+}
+
+=head2 Parsed Entities
+
+=cut
+
+# 77
+token TextDecl {
+    '<?xml' <VersionInfo>? <EncodingDecl> <S>? '?>'
+}
+
+# 78
+token extParsedEnt {
+    <TextDecl>? <content>
+}
+
 # 80
 token EncodingDecl {
     <.S> encoding <.Eq> [ \" <EncName> \" | \' <EncName> \' ]
@@ -249,3 +493,18 @@ token EncodingDecl {
 token EncName {
     <[A..Za..z]> <[A..Za..z0..9._\-]>*
 }
+
+=head2 Notation Declarations
+
+=cut
+
+# 82
+token NotationDecl {
+    '<!NOTATION' <.S> <Name> <.S> [ <ExternalID> | <PublicID> ] <.S>? '>'
+}
+
+# 83
+token PublicID {
+    'PUBLIC' <.S> <PubidLiteral>
+}
+
