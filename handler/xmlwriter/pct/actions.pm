@@ -83,11 +83,14 @@ method end_element( :$Name ) {
 method element_decl( :$Name, :$Model ) {
 }
 
-method attlist_decl( :$ElementName, :$AttributeName, :$Type, :$Fixed) {
+method attlist_decl( :$ElementName, :$AttributeName, :$Type, :$Fixed ) {
 }
 
 method entity_reference( :$Name, :$Value ) {
     print( '&', $Name, ';' );
+}
+
+method entity_decl( :$Name, :$Value, :$PublicId, :$SystemId, :$Notation ) {
 }
 
 method notation_decl( :$Name, :$PublicId, :$SystemId, :$Base ) {
@@ -99,4 +102,3 @@ method notation_decl( :$Name, :$PublicId, :$SystemId, :$Base ) {
 #   fill-column: 100
 # End:
 # vim: expandtab shiftwidth=4:
-

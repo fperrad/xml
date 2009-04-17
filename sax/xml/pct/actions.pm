@@ -173,6 +173,29 @@ method EntityRef($/) {
     make PCT::Node.new();
 }
 
+# 71
+method GEDecl($/) {
+    our %entities;
+    if ( $<EntityDef><EntityValue> ) {
+        %entities{$<Name>} := $<EntityDef><EntityValue>[0];
+    }
+    fire( 'entity_decl',
+          :Name( $<Name> ),
+          :Value( $<EntityDef><EntityValue>
+               ?? %entities{$<Name>}
+               !! '' ),
+          :PublicId( $<EntityDef><ExternalID><PubidLiteral>
+                  ?? $<EntityDef><ExternalID><PubidLiteral>[0]
+                  !! '' ),
+          :SystemId( $<EntityDef><ExternalID><SystemLiteral>
+                  ?? $<EntityDef><ExternalID><SystemLiteral>[0]
+                  !! '' ),
+          :Notation( $<EntityDef><NDataDecl>
+                  ?? $<EntityDef><NDataDecl>[0]<Name>
+                  !! '' ) );
+    make PCT::Node.new();
+}
+
 # 82
 method NotationDecl($/) {
     fire( 'notation_decl',

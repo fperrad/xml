@@ -14,7 +14,7 @@ use warnings;
 use FindBin;
 use lib "$FindBin::Bin/../../../lib", "$FindBin::Bin";
 
-use Parrot::Test tests => 3;
+use Parrot::Test tests => 4;
 use Test::More;
 
 language_output_is( 'xml', <<'CODE', <<'OUT', 'prefined entity' );
@@ -34,6 +34,18 @@ language_output_is( 'xml', <<'CODE', <<'OUT', 'character reference (hex)' );
 CODE
 <elt> A </elt>
 OUT
+
+language_output_is( 'xml', <<'CODE', <<'OUT', 'internal entity' );
+<?xml version='1.0'?><!DOCTYPE status [
+    <!ENTITY Pub-Status "This is a pre-release of the specification">
+] >
+<status>&Pub-Status;</status>
+CODE
+<?xml version="1.0"?><!DOCTYPE status [
+    <!ENTITY Pub-Status "This is a pre-release of the specification">
+]><status>&Pub-Status;</status>
+OUT
+
 
 # Local Variables:
 #   mode: cperl

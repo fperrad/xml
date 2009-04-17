@@ -73,6 +73,12 @@ token Nmtokens {
     <Nmtoken> [ <.S> <Nmtoken> ]*
 }
 
+# 9
+token EntityValue {
+      \" ( <-[%&"]>* ) \"
+    | \' ( <-[%&']>* ) \'
+}
+
 # 10
 token AttValue {
       \" ( <-[<&"]>* ) \"
@@ -87,8 +93,8 @@ token SystemLiteral {
 
 # 12
 token PubidLiteral {
-      \" <[a..zA..Z0..9\x20\xD\xA\-'()+,./:=?;!*#@$_%]>* \"
-    | \' <[a..zA..Z0..9\x20\xD\xA\-()+,./:=?;!*#@$_%]>* \'
+      \" ( <[a..zA..Z0..9\x20\xD\xA\-'()+,./:=?;!*#@$_%]>* ) \"
+    | \' ( <[a..zA..Z0..9\x20\xD\xA\-()+,./:=?;!*#@$_%]>* ) \'
 }
 
 =head2 Character Data and Markup
@@ -194,7 +200,7 @@ token Misc {
 # 28
 token doctypedecl {
     '<!DOCTYPE' <.S> <Name> [ <.S> <ExternalID> ]? <.S>?
-    [ '[' $<Internal>=[ <markupdecl> | <DeclSep> ]* ']' <.S>? ]? '>'
+    [ '[' $<Internal>=[ <markupdecl> | <.DeclSep> ]* ']' <.S>? ]? '>'
     {*}
 }
 
@@ -437,13 +443,13 @@ token PEReference {
 
 # 70
 token EntityDecl {
-      <GEDecl>
-    | <PEDecl>
+    <GEDecl> | <PEDecl>
 }
 
 # 71
 token GEDecl {
     '<!ENTITY' <.S> <Name> <.S> <EntityDef> <.S>? '>'
+    {*}
 }
 
 # 72
