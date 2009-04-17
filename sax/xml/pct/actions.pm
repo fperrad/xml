@@ -132,6 +132,14 @@ method EmptyElemTag($/) {
     make PCT::Node.new();
 }
 
+# 45
+method elementdecl($/) {
+    fire( 'element_decl',
+          :Name( $<Name> ),
+          :Model( $<contentspec> ) );
+    make PCT::Node.new();
+}
+
 # 66
 method CharRef($/, $key) {
     fire( 'characters',

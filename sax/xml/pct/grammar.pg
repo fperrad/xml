@@ -285,6 +285,7 @@ token EmptyElemTag {
 # 45
 token elementdecl {
     '<!ELEMENT' <.S> <Name> <.S> <contentspec> <.S>? '>'
+    {*}
 }
 
 # 46

@@ -80,6 +80,9 @@ method end_element( :$Name ) {
     print( '</', $Name, '>' );
 }
 
+method element_decl( :$Name, :$Model ) {
+}
+
 method entity_reference( :$Name, :$Value ) {
     print( '&', $Name, ';' );
 }
