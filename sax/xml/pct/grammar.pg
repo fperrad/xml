@@ -453,6 +453,7 @@ token GEDecl {
 # 72
 token PEDecl {
     '<!ENTITY' <.S> '%' <.S> <Name> <.S> <PEDef> <.S>? '>'
+    {*}
 }
 
 # 73

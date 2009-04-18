@@ -213,6 +213,26 @@ method GEDecl($/) {
     make PCT::Node.new();
 }
 
+# 72
+method PEDecl($/) {
+    if ( $<PEDef><EntityValue> ) {
+        fire( 'internal_entity_decl',
+              :Name( '%' ~ $<Name> ),
+              :Value( $<PEDef><EntityValue>[0] ) );
+    }
+    else {
+        fire( 'external_entity_decl',
+              :Name( '%' ~ $<Name> ),
+              :PublicId( $<PEDef><ExternalID><PubidLiteral>
+                      ?? $<PEDef><ExternalID><PubidLiteral>[0]
+                      !! '' ),
+              :SystemId( $<PEDef><ExternalID><SystemLiteral>
+                      ?? $<PEDef><ExternalID><SystemLiteral>[0]
+                      !! '' ) );
+    }
+    make PCT::Node.new();
+}
+
 # 82
 method NotationDecl($/) {
     fire( 'notation_decl',
