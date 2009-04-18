@@ -192,21 +192,19 @@ token VersionNum {
 
 # 27
 token Misc {
-      <Comment>
-    | <PI>
-    | <.S>
+    <Comment> | <PI> | <.S>
 }
 
 # 28
 token doctypedecl {
     '<!DOCTYPE' <.S> <Name> [ <.S> <ExternalID> ]? <.S>?
-    [ '[' $<Internal>=[ <markupdecl> | <.DeclSep> ]* ']' <.S>? ]? '>'
+    [ '[' $<Internal>=[ <markupdecl> | <DeclSep> ]* ']' <.S>? ]? '>'
     {*}
 }
 
 # 28a
 token DeclSep {
-    <PEReference> | <S>
+    <PEReference> | <.S>
 }
 
 # 29
