@@ -85,7 +85,7 @@ method XMLDecl($/) {
 
 # 28
 method doctypedecl($/) {
-    fire( 'doctype_decl',
+    fire( 'start_dtd',
           :Name( $<Name> ),
           :SystemId( $<ExternalID>[0]<SystemLiteral>
                   ?? $<ExternalID>[0]<SystemLiteral>[0]
@@ -96,6 +96,7 @@ method doctypedecl($/) {
           :Internal( $<Internal>
                   ?? $<Internal>[0]
                   !! '' ) );
+    fire( 'end_dtd' );
     make PCT::Node.new();
 }
 

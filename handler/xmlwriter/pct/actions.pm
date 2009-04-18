@@ -52,7 +52,7 @@ method xml_decl( :$Version, :$Encoding, :$Standalone ) {
     print( '?>' )
 }
 
-method doctype_decl( :$Name, :$SystemId, :$PublicId, :$Internal ) {
+method start_dtd( :$Name, :$SystemId, :$PublicId, :$Internal ) {
     print( '<!DOCTYPE ', $Name );
     if ?$SystemId {
         if ?$PublicId {
@@ -66,6 +66,9 @@ method doctype_decl( :$Name, :$SystemId, :$PublicId, :$Internal ) {
         print( ' [', $Internal , ']' );
     }
     print( '>' );
+}
+
+method end_dtd() {
 }
 
 method start_element( :$Name, :%Attributes ) {
