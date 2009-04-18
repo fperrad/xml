@@ -118,7 +118,7 @@ method doctypedecl($/, $key) {
 method STag($/) {
     my %attr;
     for ( $<Attribute> ) {
-        %attr{ $_<Name> } := $_<AttValue>[0];
+        %attr{ $_<Name> } := normalize( $_<AttValue>[0] );
     }
     fire( 'start_element',
           :Name( $<Name> ),
@@ -137,8 +137,7 @@ method ETag($/) {
 method EmptyElemTag($/) {
     my %attr;
     for ( $<Attribute> ) {
-        # TODO : normalized value
-        %attr{ $_<Name> } := $_<AttValue>[0];
+        %attr{ $_<Name> } := normalize( $_<AttValue>[0] );
     }
     fire( 'start_element',
           :Name( $<Name> ),

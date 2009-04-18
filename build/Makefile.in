@@ -39,7 +39,8 @@ SAX_XML_SOURCES := \
 
 SAX_XML_BUILTINS_PIR := \
   sax/xml/builtins/char_ref.pir \
-  sax/xml/builtins/fire.pir
+  sax/xml/builtins/fire.pir \
+  sax/xml/builtins/normalize.pir
 
 HANDLER_XMLWRITER_SOURCES := \
   handler/xmlwriter/gen_actions.pir \

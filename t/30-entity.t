@@ -49,7 +49,7 @@ CODE
 OUT
 
 language_output_is( 'xml', <<'CODE', <<'OUT', 'in attribute' );
-<elt a="1 &gt; 0"> &lt; </elt>
+<elt a="&#x31; &gt; &#48;"> &lt; </elt>
 CODE
 <elt a="1 &gt; 0"> &lt; </elt>
 OUT

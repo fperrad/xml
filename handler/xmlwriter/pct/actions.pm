@@ -82,8 +82,7 @@ method end_dtd() {
 method start_element( :$Name, :%Attributes ) {
     print( '<', $Name );
     for %Attributes {
-        # TODO : escape value when normalized by parser
-        print( ' ', $_, '="', %Attributes{$_} , '"' );
+        print( ' ', $_, '="', escape( %Attributes{$_} ) , '"' );
     }
     print( '>' );
 }
