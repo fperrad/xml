@@ -75,14 +75,20 @@ token Nmtokens {
 
 # 9
 token EntityValue {
-      \" ( <-[%&"]>* ) \"
-    | \' ( <-[%&']>* ) \'
+    {*}                         #= start_value
+    [ \" ( [ <-[%&"]> | <PEReference> | <Reference> ]* ) \"
+    | \' ( [ <-[%&']> | <PEReference> | <Reference> ]* ) \'
+    ]
+    {*}                         #= end_value
 }
 
 # 10
 token AttValue {
-      \" ( <-[<&"]>* ) \"
-    | \' ( <-[<&']>* ) \'
+    {*}                         #= start_value
+    [ \" ( [ <-[<&"]> | <Reference> ]* ) \"
+    | \' ( [ <-[<&']> | <Reference> ]* ) \'
+    ]
+    {*}                         #= end_value
 }
 
 # 11
@@ -421,8 +427,7 @@ token CharRef {
 
 # 67
 token Reference {
-      <EntityRef> {*}           #= EntityRef
-    | <CharRef> {*}             #= CharRef
+    <EntityRef> | <CharRef>
 }
 
 # 68

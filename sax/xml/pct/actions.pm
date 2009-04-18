@@ -24,6 +24,7 @@ method TOP($/) {
 
 # 1
 method document($/, $key) {
+    our $fire_ent := 1;
     our %entities;
     if ( $key eq 'start_document' ) {
         # predefined entities
@@ -34,6 +35,18 @@ method document($/, $key) {
         %entities{'quot'} := '"';
     }
     fire( $key );
+    make PCT::Node.new();
+}
+
+# 9
+method EntityValue ($/, $key) {
+    our $fire_ent := $key ne 'start_value';
+    make PCT::Node.new();
+}
+
+# 10
+method AttValue ($/, $key) {
+    our $fire_ent := $key ne 'start_value';
     make PCT::Node.new();
 }
 
@@ -124,6 +137,7 @@ method ETag($/) {
 method EmptyElemTag($/) {
     my %attr;
     for ( $<Attribute> ) {
+        # TODO : normalized value
         %attr{ $_<Name> } := $_<AttValue>[0];
     }
     fire( 'start_element',
@@ -161,22 +175,23 @@ method AttlistDecl($/) {
 
 # 66
 method CharRef($/, $key) {
-    fire( 'characters',
-          :Data( char_ref( $key, $/[0] ) ) );
+    our $fire_ent;
+    if ( $fire_ent ) {
+        fire( 'characters',
+              :Data( char_ref( $key, $/[0] ) ) );
+    }
     make PCT::Node.new();
-}
-
-# 67
-method Reference($/, $key) {
-    make $( $/{$key} );
 }
 
 # 68
 method EntityRef($/) {
+    our $fire_ent;
     our %entities;
-    fire( 'entity_reference',
-          :Name( $<Name> ),
-          :Value( %entities{$<Name>} ) );
+    if ( $fire_ent ) {
+        fire( 'entity_reference',
+              :Name( $<Name> ),
+              :Value( %entities{$<Name>} ) );
+    }
     make PCT::Node.new();
 }
 

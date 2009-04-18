@@ -14,7 +14,7 @@ use warnings;
 use FindBin;
 use lib "$FindBin::Bin/../../../lib", "$FindBin::Bin";
 
-use Parrot::Test tests => 4;
+use Parrot::Test tests => 5;
 use Test::More;
 
 language_output_is( 'xml', <<'CODE', <<'OUT', 'prefined entity' );
@@ -47,6 +47,13 @@ CODE
 ]>
 <status>&Pub-Status;</status>
 OUT
+
+language_output_is( 'xml', <<'CODE', <<'OUT', 'in attribute' );
+<elt a="1 &gt; 0"> &lt; </elt>
+CODE
+<elt a="1 &gt; 0"> &lt; </elt>
+OUT
+
 
 
 # Local Variables:
