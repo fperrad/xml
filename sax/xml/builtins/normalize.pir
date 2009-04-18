@@ -6,12 +6,19 @@
     .param string str
     .local string res
     res = ''
-    .local int pos, lastpos
+    .local int pos
     pos = 0
-    lastpos = length str
   L1:
-    $S0 = substr str, pos, 1
-    unless $S0 == '&' goto L_char
+    $I1 = index str, '&', pos
+    unless $I1 < 0 goto L2
+    $S0 = substr str, pos
+    res .= $S0
+    .return (res)
+  L2:
+    $I0 = $I1 - pos
+    $S0 = substr str, pos, $I0
+    res .= $S0
+    pos = $I1
     inc pos
     $S0 = substr str, pos, 1
     unless $S0 == '#' goto L_name
@@ -24,25 +31,25 @@
     $S0 = substr str, pos, 1
     $S0 = upcase $S0
     $I1 = index '0123456789ABCDEF', $S0
-    if $I1 < 0 goto L2
+    if $I1 < 0 goto L3
     $I0 *= 16
     $I0 += $I1
     inc pos
     goto L_hex
-  L2:
+  L3:
     $S0 = chr $I0
-    goto L_char
+    goto L_concat
   L_dec:
     $S0 = substr str, pos, 1
     $I1 = index '0123456789', $S0
-    if $I1 < 0 goto L3
+    if $I1 < 0 goto L4
     $I0 *= 10
     $I0 += $I1
     inc pos
     goto L_dec
-  L3:
+  L4:
     $S0 = chr $I0
-    goto L_char
+    goto L_concat
   L_name:
     .local string name
     $I1 = index str, ';', pos
@@ -51,10 +58,10 @@
     pos = $I1
     $P0 = get_global ['Xml';'Sax';'Xml';'Grammar';'Actions'], '%entities'
     $S0 = $P0[name]
-  L_char:
+  L_concat:
     res .= $S0
     inc pos
-    unless pos == lastpos goto L1
+    goto L1
     .return ( res )
 .end
 
