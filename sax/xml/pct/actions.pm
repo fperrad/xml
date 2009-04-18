@@ -144,10 +144,15 @@ method elementdecl($/) {
 method AttlistDecl($/) {
     for ( $<AttDef> ) {
         fire( 'attlist_decl',
-              :ElementName( $<Name> ),
-              :AttributeName( $_<Name> ),
+              :eName( $<Name> ),
+              :aName( $_<Name> ),
               :Type( $_<AttType> ),
-              :Fixed( $_<DefaultDecl> ) );
+              :Mode( $_<DefaultDecl><AttValue>
+                  ?? $_<DefaultDecl>[0][0]
+                  !! $_<DefaultDecl> ),
+              :Value( $_<DefaultDecl><AttValue>
+                   ?? $_<DefaultDecl><AttValue>[0]
+                   !! '' ) );
     }
     make PCT::Node.new();
 }
@@ -178,21 +183,33 @@ method GEDecl($/) {
     our %entities;
     if ( $<EntityDef><EntityValue> ) {
         %entities{$<Name>} := $<EntityDef><EntityValue>[0];
+        fire( 'internal_entity_decl',
+              :Name( $<Name> ),
+              :Value( %entities{$<Name>} ) );
     }
-    fire( 'entity_decl',
-          :Name( $<Name> ),
-          :Value( $<EntityDef><EntityValue>
-               ?? %entities{$<Name>}
-               !! '' ),
-          :PublicId( $<EntityDef><ExternalID><PubidLiteral>
-                  ?? $<EntityDef><ExternalID><PubidLiteral>[0]
-                  !! '' ),
-          :SystemId( $<EntityDef><ExternalID><SystemLiteral>
-                  ?? $<EntityDef><ExternalID><SystemLiteral>[0]
-                  !! '' ),
-          :Notation( $<EntityDef><NDataDecl>
-                  ?? $<EntityDef><NDataDecl>[0]<Name>
-                  !! '' ) );
+    elsif ( $<EntityDef><NDataDecl> ) {
+        fire( 'unparsed_entity_decl',
+              :Name( $<Name> ),
+              :PublicId( $<EntityDef><ExternalID><PubidLiteral>
+                      ?? $<EntityDef><ExternalID><PubidLiteral>[0]
+                      !! '' ),
+              :SystemId( $<EntityDef><ExternalID><SystemLiteral>
+                      ?? $<EntityDef><ExternalID><SystemLiteral>[0]
+                      !! '' ),
+              :Notation( $<EntityDef><NDataDecl>
+                      ?? $<EntityDef><NDataDecl>[0]<Name>
+                      !! '' ) );
+    }
+    else {
+        fire( 'external_entity_decl',
+              :Name( $<Name> ),
+              :PublicId( $<EntityDef><ExternalID><PubidLiteral>
+                      ?? $<EntityDef><ExternalID><PubidLiteral>[0]
+                      !! '' ),
+              :SystemId( $<EntityDef><ExternalID><SystemLiteral>
+                      ?? $<EntityDef><ExternalID><SystemLiteral>[0]
+                      !! '' ) );
+    }
     make PCT::Node.new();
 }
 

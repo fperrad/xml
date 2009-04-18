@@ -83,14 +83,20 @@ method end_element( :$Name ) {
 method element_decl( :$Name, :$Model ) {
 }
 
-method attlist_decl( :$ElementName, :$AttributeName, :$Type, :$Fixed ) {
+method attlist_decl( :$eName, :$aName, :$Type, :$Mode, :$Value ) {
 }
 
 method entity_reference( :$Name, :$Value ) {
     print( '&', $Name, ';' );
 }
 
-method entity_decl( :$Name, :$Value, :$PublicId, :$SystemId, :$Notation ) {
+method internal_entity_decl( :$Name, :$Value ) {
+}
+
+method external_entity_decl( :$Name, :$PublicId, :$SystemId ) {
+}
+
+method unparsed_entity_decl( :$Name, :$PublicId, :$SystemId, :$Notation ) {
 }
 
 method notation_decl( :$Name, :$PublicId, :$SystemId, :$Base ) {
