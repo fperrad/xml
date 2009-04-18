@@ -20,7 +20,9 @@ use Test::More;
 language_output_is( 'xml', <<'CODE', <<'OUT', 'system' );
 <?xml version='1.0'?><!DOCTYPE greeting SYSTEM 'hello.dtd'><greeting>Hello, world!</greeting>
 CODE
-<?xml version="1.0"?><!DOCTYPE greeting SYSTEM "hello.dtd"><greeting>Hello, world!</greeting>
+<?xml version="1.0"?>
+<!DOCTYPE greeting SYSTEM "hello.dtd">
+<greeting>Hello, world!</greeting>
 OUT
 
 language_output_is( 'xml', <<'CODE', <<'OUT', 'internal' );
@@ -29,9 +31,11 @@ language_output_is( 'xml', <<'CODE', <<'OUT', 'internal' );
 ] >
 <greeting>Hello, world!</greeting>
 CODE
-<?xml version="1.0"?><!DOCTYPE greeting [
-    <!ELEMENT greeting (#PCDATA)>
-]><greeting>Hello, world!</greeting>
+<?xml version="1.0"?>
+<!DOCTYPE greeting [
+  <!ELEMENT greeting (#PCDATA)>
+]>
+<greeting>Hello, world!</greeting>
 OUT
 
 language_output_is( 'xml', <<'CODE', <<'OUT', 'attlist' );
@@ -41,10 +45,12 @@ language_output_is( 'xml', <<'CODE', <<'OUT', 'attlist' );
 ] >
 <greeting>Hello, world!</greeting>
 CODE
-<?xml version="1.0"?><!DOCTYPE greeting [
-    <!ELEMENT greeting (#PCDATA)>
-    <!ATTLIST greeting id ID #IMPLIED>
-]><greeting>Hello, world!</greeting>
+<?xml version="1.0"?>
+<!DOCTYPE greeting [
+  <!ELEMENT greeting (#PCDATA)>
+  <!ATTLIST greeting id ID #IMPLIED>
+]>
+<greeting>Hello, world!</greeting>
 OUT
 
 language_output_is( 'xml', <<'CODE', <<'OUT', 'attlist' );
@@ -59,15 +65,14 @@ language_output_is( 'xml', <<'CODE', <<'OUT', 'attlist' );
 ]>
 <form />
 CODE
-<?xml version="1.0"?><!DOCTYPE form [
-  <!ATTLIST termdef
-            id      ID      #REQUIRED
-            name    CDATA   #IMPLIED>
-  <!ATTLIST list
-            type    (bullets|ordered|glossary) "ordered">
-  <!ATTLIST form
-            method  CDATA   #FIXED "POST">
-]><form></form>
+<?xml version="1.0"?>
+<!DOCTYPE form [
+  <!ATTLIST termdef id ID #REQUIRED>
+  <!ATTLIST termdef name CDATA #IMPLIED>
+  <!ATTLIST list type (bullets|ordered|glossary) "ordered">
+  <!ATTLIST form method CDATA #FIXED "POST">
+]>
+<form></form>
 OUT
 
 language_output_is( 'xml', <<'CODE', <<'OUT', 'notation' );
@@ -76,9 +81,11 @@ language_output_is( 'xml', <<'CODE', <<'OUT', 'notation' );
 ] >
 <greeting>Hello, world!</greeting>
 CODE
-<?xml version="1.0"?><!DOCTYPE greeting [
-    <!NOTATION note SYSTEM "note.txt">
-]><greeting>Hello, world!</greeting>
+<?xml version="1.0"?>
+<!DOCTYPE greeting [
+  <!NOTATION note SYSTEM "note.txt">
+]>
+<greeting>Hello, world!</greeting>
 OUT
 
 language_output_is( 'xml', <<'CODE', <<'OUT', 'internal entity' );
@@ -87,12 +94,14 @@ language_output_is( 'xml', <<'CODE', <<'OUT', 'internal entity' );
 ] >
 <greeting>Hello, world!</greeting>
 CODE
-<?xml version="1.0"?><!DOCTYPE greeting [
-    <!ENTITY Pub-Status "This is a pre-release of the specification">
-]><greeting>Hello, world!</greeting>
+<?xml version="1.0"?>
+<!DOCTYPE greeting [
+  <!ENTITY Pub-Status "This is a pre-release of the specification">
+]>
+<greeting>Hello, world!</greeting>
 OUT
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'external entity' );
+language_output_is( 'xml', <<'CODE', <<'OUT', 'external entity & unparsed' );
 <?xml version='1.0'?><!DOCTYPE greeting [
     <!ENTITY open-hatch
              SYSTEM "http://www.textuality.com/boilerplate/OpenHatch.xml">
@@ -105,16 +114,13 @@ language_output_is( 'xml', <<'CODE', <<'OUT', 'external entity' );
 ] >
 <greeting>Hello, world!</greeting>
 CODE
-<?xml version="1.0"?><!DOCTYPE greeting [
-    <!ENTITY open-hatch
-             SYSTEM "http://www.textuality.com/boilerplate/OpenHatch.xml">
-    <!ENTITY open-hatch
-             PUBLIC "-//Textuality//TEXT Standard open-hatch boilerplate//EN"
-             "http://www.textuality.com/boilerplate/OpenHatch.xml">
-    <!ENTITY hatch-pic
-             SYSTEM "../grafix/OpenHatch.gif"
-             NDATA gif >
-]><greeting>Hello, world!</greeting>
+<?xml version="1.0"?>
+<!DOCTYPE greeting [
+  <!ENTITY open-hatch SYSTEM "http://www.textuality.com/boilerplate/OpenHatch.xml">
+  <!ENTITY open-hatch PUBLIC "-//Textuality//TEXT Standard open-hatch boilerplate//EN" "http://www.textuality.com/boilerplate/OpenHatch.xml">
+  <!ENTITY hatch-pic SYSTEM "../grafix/OpenHatch.gif" NDATA gif>
+]>
+<greeting>Hello, world!</greeting>
 OUT
 
 language_output_is( 'xml', <<'CODE', <<'OUT', 'parameter entity' );
@@ -123,9 +129,11 @@ language_output_is( 'xml', <<'CODE', <<'OUT', 'parameter entity' );
 ] >
 <greeting>Hello, world!</greeting>
 CODE
-<?xml version="1.0"?><!DOCTYPE greeting [
-    <!ENTITY % core "abc">
-]><greeting>Hello, world!</greeting>
+<?xml version="1.0"?>
+<!DOCTYPE greeting [
+  <!ENTITY %core "abc">
+]>
+<greeting>Hello, world!</greeting>
 OUT
 
 # Local Variables:

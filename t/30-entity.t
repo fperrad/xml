@@ -41,9 +41,11 @@ language_output_is( 'xml', <<'CODE', <<'OUT', 'internal entity' );
 ] >
 <status>&Pub-Status;</status>
 CODE
-<?xml version="1.0"?><!DOCTYPE status [
-    <!ENTITY Pub-Status "This is a pre-release of the specification">
-]><status>&Pub-Status;</status>
+<?xml version="1.0"?>
+<!DOCTYPE status [
+  <!ENTITY Pub-Status "This is a pre-release of the specification">
+]>
+<status>&Pub-Status;</status>
 OUT
 
 

@@ -84,19 +84,20 @@ method XMLDecl($/) {
 }
 
 # 28
-method doctypedecl($/) {
-    fire( 'start_dtd',
-          :Name( $<Name> ),
-          :SystemId( $<ExternalID>[0]<SystemLiteral>
-                  ?? $<ExternalID>[0]<SystemLiteral>[0]
-                  !! '' ),
-          :PublicId( $<ExternalID>[0]<PubidLiteral>
-                  ?? $<ExternalID>[0]<PubidLiteral>[0]
-                  !! '' ),
-          :Internal( $<Internal>
-                  ?? $<Internal>[0]
-                  !! '' ) );
-    fire( 'end_dtd' );
+method doctypedecl($/, $key) {
+    if ( $key eq 'start_dtd' ) {
+        fire( $key,
+              :Name( $<Name> ),
+              :SystemId( $<ExternalID>[0]<SystemLiteral>
+                      ?? $<ExternalID>[0]<SystemLiteral>[0]
+                      !! '' ),
+              :PublicId( $<ExternalID>[0]<PubidLiteral>
+                      ?? $<ExternalID>[0]<PubidLiteral>[0]
+                      !! '' ) );
+    }
+    else {
+        fire( $key );
+    }
     make PCT::Node.new();
 }
 
@@ -243,8 +244,7 @@ method NotationDecl($/) {
                   !! '' ),
           :SystemId( $<_NotationID><SystemLiteral>
                   ?? $<_NotationID><SystemLiteral>[0]
-                  !! '' ),
-          :Base( 'TODO' ) );
+                  !! '' ) );
     make PCT::Node.new();
 }
 

@@ -20,19 +20,22 @@ use Test::More;
 language_output_is( 'xml', <<'CODE', <<'OUT', 'version' );
 <?xml version='1.0'?><elt>content</elt>
 CODE
-<?xml version="1.0"?><elt>content</elt>
+<?xml version="1.0"?>
+<elt>content</elt>
 OUT
 
 language_output_is( 'xml', <<'CODE', <<'OUT', 'encoding' );
 <?xml version='1.0' encoding='utf-8'?><elt>content</elt>
 CODE
-<?xml version="1.0" encoding="utf-8"?><elt>content</elt>
+<?xml version="1.0" encoding="utf-8"?>
+<elt>content</elt>
 OUT
 
 language_output_is( 'xml', <<'CODE', <<'OUT', 'standalone' );
 <?xml version='1.0' standalone="yes"?><elt>content</elt>
 CODE
-<?xml version="1.0" standalone="yes"?><elt>content</elt>
+<?xml version="1.0" standalone="yes"?>
+<elt>content</elt>
 OUT
 
 # Local Variables:

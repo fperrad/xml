@@ -198,8 +198,9 @@ token Misc {
 # 28
 token doctypedecl {
     '<!DOCTYPE' <.S> <Name> [ <.S> <ExternalID> ]? <.S>?
-    [ '[' $<Internal>=[ <markupdecl> | <DeclSep> ]* ']' <.S>? ]? '>'
-    {*}
+    {*}                         #= start_dtd
+    [ '[' [ <markupdecl> | <DeclSep> ]* ']' <.S>? ]? '>'
+    {*}                         #= end_dtd
 }
 
 # 28a
