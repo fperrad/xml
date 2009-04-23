@@ -4,11 +4,16 @@
 
 .sub 'normalize'
     .param string str
+    $I1 = index str, '&'
+    unless $I1 < 0 goto L1
+    .return (str)
+  L1:
     .local string res
     res = ''
     .local int pos
     pos = 0
-  L1:
+    goto L2
+  L_loop:
     $I1 = index str, '&', pos
     unless $I1 < 0 goto L2
     $S0 = substr str, pos
@@ -31,23 +36,23 @@
     $S0 = substr str, pos, 1
     $S0 = upcase $S0
     $I1 = index '0123456789ABCDEF', $S0
-    if $I1 < 0 goto L3
+    if $I1 < 0 goto L_hex_end
     $I0 *= 16
     $I0 += $I1
     inc pos
     goto L_hex
-  L3:
+  L_hex_end:
     $S0 = chr $I0
     goto L_concat
   L_dec:
     $S0 = substr str, pos, 1
     $I1 = index '0123456789', $S0
-    if $I1 < 0 goto L4
+    if $I1 < 0 goto L_dec_end
     $I0 *= 10
     $I0 += $I1
     inc pos
     goto L_dec
-  L4:
+  L_dec_end:
     $S0 = chr $I0
     goto L_concat
   L_name:
@@ -61,7 +66,7 @@
   L_concat:
     res .= $S0
     inc pos
-    goto L1
+    goto L_loop
     .return ( res )
 .end
 
