@@ -5,7 +5,7 @@
 .sub 'fire'
     .param string event
     .param pmc args :slurpy :named
-    $P0 = get_global 'Handler'
+    $P0 = get_hll_global [ 'Xml';'Sax';'Xml';'Compiler' ], 'Handler'
     if null $P0 goto L1
     $P1 = find_method $P0, event
     .tailcall $P1($P0, args :named :flat)

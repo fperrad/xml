@@ -5,7 +5,7 @@
 .sub 'print'
     .param pmc args            :slurpy
     .local pmc stream
-    stream = get_global 'Stream'
+    stream = get_hll_global [ 'Xml';'Handler';'XmlWriter' ], 'Stream'
     .local pmc iter
     iter = new 'Iterator', args
   iter_loop:

@@ -35,23 +35,19 @@ a simple handler
     .local string filename
     $P0 = shift args # progname
     filename = shift args
-    .local string source
-    $P0 = new 'FileHandle'
-    source = $P0.'readall'(filename)
-    $P0.'close'()
-
-    .local pmc handler
-    handler = new ['Xml';'Handler';'XmlWriter']
-    set_global 'Handler', handler
 
     .local pmc stream
     stream = new 'StringHandle'
     stream.'open'( 'xml', 'wr' )
-    set_global 'Stream', stream
+
+    .local pmc handler
+    handler = new ['Xml';'Handler';'XmlWriter']
+    handler.'stream'(stream)
 
     .local pmc driver
-    driver = compreg 'Xml'
-    driver.'parse'(source)
+    driver = new [ 'Xml';'Sax';'Xml';'Compiler' ]
+    driver.'handler'(handler)
+    driver.'parse_file'(filename)
 
     $S0 = stream.'readall'()
     stream.'close'()
@@ -63,4 +59,3 @@ a simple handler
 #   fill-column: 100
 # End:
 # vim: expandtab shiftwidth=4 ft=pir:
-

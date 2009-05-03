@@ -23,10 +23,13 @@ object.
 
 =cut
 
-.namespace [ 'Xml::Sax::Xml::Compiler' ]
+.namespace [ 'Xml';'Sax';'Xml';'Compiler' ]
 
 .sub 'onload' :anon :load :init
     load_bytecode 'PCT.pbc'
+
+    new $P0, 'P6metaclass'
+    $P0.'new_class'('Xml::Sax::Xml::Compiler', 'attr'=>'comp')
 
     $P0 = get_hll_global ['PCT'], 'HLLCompiler'
     $P1 = $P0.'new'()
@@ -36,6 +39,65 @@ object.
     $P1.'removestage'('evalpmc')
     $P1.'removestage'('pir')
     $P1.'removestage'('post')
+.end
+
+.sub 'init' :method :vtable
+    $P0 = compreg 'Xml'
+    self.'comp'($P0)
+.end
+
+.sub 'attr' :method
+    .param string attrname
+    .param pmc value
+    .param int has_value
+    if has_value goto set_value
+    value = getattribute self, attrname
+    unless null value goto end
+    value = new 'Undef'
+    goto end
+  set_value:
+    setattribute self, attrname, value
+  end:
+    .return (value)
+.end
+
+.sub 'comp' :method
+    .param pmc value           :optional
+    .param int has_value       :opt_flag
+    .tailcall self.'attr'('comp', value, has_value)
+.end
+
+.sub 'handler' :method
+    .param pmc value           :optional
+    .param int has_value       :opt_flag
+    if has_value goto set_value
+    value = get_hll_global [ 'Xml';'Sax';'Xml';'Compiler' ], 'Handler'
+    unless null value goto end
+    value = new 'Undef'
+    goto end
+  set_value:
+    set_hll_global [ 'Xml';'Sax';'Xml';'Compiler' ], 'Handler', value
+  end:
+    .return (value)
+.end
+
+.sub 'parse' :method
+    .param pmc source
+    $P0 = self.'comp'()
+    .tailcall $P0.'parse'(source)
+.end
+
+.sub 'parse_string' :method
+    .param pmc source
+    .tailcall self.'parse'(source)
+.end
+
+.sub 'parse_file' :method
+    .param pmc stream
+    $P0 = new 'FileHandle'
+    $S0 = $P0.'readall'(stream)
+    $P0.'close'()
+    .tailcall self.'parse'($S0)
 .end
 
 =item main(args :slurpy)  :main
