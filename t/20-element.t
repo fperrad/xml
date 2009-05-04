@@ -14,7 +14,7 @@ use warnings;
 use FindBin;
 use lib "$FindBin::Bin/../../../lib", "$FindBin::Bin";
 
-use Parrot::Test tests => 4;
+use Parrot::Test tests => 5;
 use Test::More;
 
 language_output_is( 'xml', <<'CODE', <<'OUT', 'start/end' );
@@ -40,6 +40,13 @@ language_output_is( 'xml', <<'CODE', <<'OUT', 'empty with attribute' );
 CODE
 <elt a="1"></elt>
 OUT
+
+language_output_like( 'xml', <<'CODE', <<'OUT', 'unbalanced start/end' );
+<a><b>content</c></a>
+CODE
+/^unbalanced end tag: c \(b expected\)\n/
+OUT
+
 
 # Local Variables:
 #   mode: cperl

@@ -156,6 +156,10 @@ method notation_decl( :$Name, :$PublicId, :$SystemId ) {
     print( '>', "\n" );
 }
 
+method error( :$Exception ) {
+    throw( 'error', $Exception );
+}
+
 # Local Variables:
 #   mode: cperl
 #   cperl-indent-level: 4

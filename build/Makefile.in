@@ -49,7 +49,8 @@ HANDLER_XMLWRITER_SOURCES := \
 
 HANDLER_XMLWRITER_BUILTINS_PIR := \
   handler/xmlwriter/builtins/escape.pir \
-  handler/xmlwriter/builtins/print.pir
+  handler/xmlwriter/builtins/print.pir \
+  handler/xmlwriter/builtins/throw.pir
 
 DOCS := README
 

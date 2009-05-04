@@ -26,6 +26,7 @@ method TOP($/) {
 method document($/, $key) {
     our $fire_ent := 1;
     our %entities;
+    our $elt_stack := PCT::Node.new();
     if ( $key eq 'start_document' ) {
         # predefined entities
         %entities{'lt'} := '<';
@@ -117,6 +118,8 @@ method doctypedecl($/, $key) {
 # 40
 method STag($/) {
     my %attr;
+    our $elt_stack;
+    $elt_stack.push( $<Name> );
     for ( $<Attribute> ) {
         %attr{ $_<Name> } := normalize( $_<AttValue>[0] );
     }
@@ -128,8 +131,17 @@ method STag($/) {
 
 # 42
 method ETag($/) {
-    fire( 'end_element',
-          :Name( $<Name> ) );
+    our $elt_stack;
+    my $curr;
+    $curr := $elt_stack.pop();
+    if ( $curr eq $<Name> ) {
+        fire( 'end_element',
+              :Name( $<Name> ) );
+    }
+    else {
+        fire( 'error',
+              :Exception( "unbalanced end tag: " ~ $<Name> ~ " (" ~ $curr ~ " expected)") );
+    }
     make PCT::Node.new();
 }
 
