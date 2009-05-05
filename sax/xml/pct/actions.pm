@@ -121,6 +121,10 @@ method STag($/) {
     our $elt_stack;
     $elt_stack.push( $<Name> );
     for ( $<Attribute> ) {
+        if ( %attr{ $_<Name> } ) {
+            fire( 'error',
+                  :Exception( "duplicate attribute: " ~ $_<Name> ) );
+        }
         %attr{ $_<Name> } := normalize( $_<AttValue>[0] );
     }
     fire( 'start_element',
@@ -140,7 +144,7 @@ method ETag($/) {
     }
     else {
         fire( 'error',
-              :Exception( "unbalanced end tag: " ~ $<Name> ~ " (" ~ $curr ~ " expected)") );
+              :Exception( "unbalanced end tag: " ~ $<Name> ~ " (" ~ $curr ~ " expected)" ) );
     }
     make PCT::Node.new();
 }
@@ -149,6 +153,10 @@ method ETag($/) {
 method EmptyElemTag($/) {
     my %attr;
     for ( $<Attribute> ) {
+        if ( %attr{ $_<Name> } ) {
+            fire( 'error',
+                  :Exception( "duplicate attribute: " ~ $_<Name> ) );
+        }
         %attr{ $_<Name> } := normalize( $_<AttValue>[0] );
     }
     fire( 'start_element',

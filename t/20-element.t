@@ -14,7 +14,7 @@ use warnings;
 use FindBin;
 use lib "$FindBin::Bin/../../../lib", "$FindBin::Bin";
 
-use Parrot::Test tests => 5;
+use Parrot::Test tests => 7;
 use Test::More;
 
 language_output_is( 'xml', <<'CODE', <<'OUT', 'start/end' );
@@ -29,6 +29,12 @@ CODE
 <elt a="1" b="txt">content</elt>
 OUT
 
+language_output_like( 'xml', <<'CODE', <<'OUT', 'start/end with duplicated attributes' );
+<elt a="1" a='txt' >content</elt  >
+CODE
+/^duplicate attribute: a\n/
+OUT
+
 language_output_is( 'xml', <<'CODE', <<'OUT', 'empty' );
 <elt  />
 CODE
@@ -39,6 +45,12 @@ language_output_is( 'xml', <<'CODE', <<'OUT', 'empty with attribute' );
 <elt a='1' />
 CODE
 <elt a="1"></elt>
+OUT
+
+language_output_like( 'xml', <<'CODE', <<'OUT', 'empty with duplicated attributes' );
+<elt a='1' a='2'/>
+CODE
+/^duplicate attribute: a\n/
 OUT
 
 language_output_like( 'xml', <<'CODE', <<'OUT', 'unbalanced start/end' );
