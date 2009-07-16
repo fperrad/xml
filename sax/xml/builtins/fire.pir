@@ -11,11 +11,11 @@
     .tailcall $P1($P0, args :named :flat)
   L1:
     print event
-    .local pmc iter
-    iter = new 'Iterator', args
+    .local pmc it
+    it = iter args
   iter_loop:
-    unless iter goto iter_end
-    $S0 = shift iter
+    unless it goto iter_end
+    $S0 = shift it
     print ' '
     print $S0
     print '='

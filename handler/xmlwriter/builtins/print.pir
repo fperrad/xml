@@ -6,11 +6,11 @@
     .param pmc args            :slurpy
     .local pmc stream
     stream = get_hll_global [ 'Xml';'Handler';'XmlWriter' ], 'Stream'
-    .local pmc iter
-    iter = new 'Iterator', args
+    .local pmc it
+    it = iter args
   iter_loop:
-    unless iter goto iter_end
-    $P0 = shift iter
+    unless it goto iter_end
+    $P0 = shift it
     stream.'print'($P0)
     goto iter_loop
   iter_end:
