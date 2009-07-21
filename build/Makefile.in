@@ -59,6 +59,7 @@ BUILD_CLEANUPS := \
   "sax/xml/gen_*.pir" \
   "handler/xmlwriter/*.pbc" \
   "handler/xmlwriter/gen_*.pir" \
+  "*.pbc" \
 #IF(win32):  parrot-xml.iss \
 #IF(win32):  "setup-parrot-*.exe" \
 
