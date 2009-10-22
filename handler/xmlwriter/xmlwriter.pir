@@ -4,9 +4,6 @@
 
 .sub 'onload' :anon :load :init
     load_bytecode 'PCT.pbc'
-
-    new $P0, 'P6metaclass'
-    $P0.'new_class'('Xml::Handler::XmlWriter', 'attr'=>'stream')
 .end
 
 .sub 'stream' :method
