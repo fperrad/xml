@@ -95,7 +95,7 @@ handler/xmlwriter/gen_actions.pir: $(NQP) handler/xmlwriter/pct/actions.pm
 handler/xmlwriter/gen_builtins.pir: $(HANDLER_XMLWRITER_BUILTINS_PIR)
 	$(CAT) $(HANDLER_XMLWRITER_BUILTINS_PIR) > handler/xmlwriter/gen_builtins.pir
 
-Makefile: build/Makefile.in
+Makefile: Makefile.in
 	$(PARROT) Configure.pir
 
 # This is a listing of all targets, that are meant to be called by users

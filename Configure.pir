@@ -12,7 +12,7 @@
 
     # Here, do the job
     push_eh _handler
-    genfile('build/Makefile.in', 'Makefile', config)
+    genfile('Makefile.in', 'Makefile', config)
     pop_eh
     end
 
