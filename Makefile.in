@@ -18,7 +18,6 @@ PCT           := $(LIB_DIR)/library/PCT.pbc
 ## Setup some commands
 MAKE          := @make_c@
 PERL          := @perl@
-CAT           := @cat@
 CHMOD         := @chmod@
 CP            := @cp@
 MKPATH        := @mkpath@
@@ -33,23 +32,19 @@ PARROT        := $(BIN_DIR)/parrot@exe@
 SAX_XML_SOURCES := \
   xml/sax/xml/gen_grammar.pir \
   xml/sax/xml/gen_actions.pir \
-  xml/sax/xml/gen_builtins.pir \
-  xml/sax/xml.pir
-
-SAX_XML_BUILTINS_PIR := \
+  xml/sax/xml/builtins.pir \
   xml/sax/xml/builtins/char_ref.pir \
   xml/sax/xml/builtins/fire.pir \
-  xml/sax/xml/builtins/normalize.pir
+  xml/sax/xml/builtins/normalize.pir \
+  xml/sax/xml.pir
 
 HANDLER_XMLWRITER_SOURCES := \
   xml/handler/xmlwriter/gen_actions.pir \
-  xml/handler/xmlwriter/gen_builtins.pir \
-  xml/handler/xmlwriter.pir
-
-HANDLER_XMLWRITER_BUILTINS_PIR := \
+  xml/handler/xmlwriter/builtins.pir \
   xml/handler/xmlwriter/builtins/escape.pir \
   xml/handler/xmlwriter/builtins/print.pir \
-  xml/handler/xmlwriter/builtins/throw.pir
+  xml/handler/xmlwriter/builtins/throw.pir \
+  xml/handler/xmlwriter.pir
 
 DOCS := README
 
@@ -82,18 +77,12 @@ xml/sax/xml/gen_actions.pir: $(NQP) xml/sax/xml/pct/actions.pm
 	$(PARROT) $(PARROT_ARGS) $(NQP) --output=xml/sax/xml/gen_actions.pir \
 	    --target=pir xml/sax/xml/pct/actions.pm
 
-xml/sax/xml/gen_builtins.pir: $(SAX_XML_BUILTINS_PIR)
-	$(CAT) $(SAX_XML_BUILTINS_PIR) > xml/sax/xml/gen_builtins.pir
-
 xml/handler/xmlwriter.pbc: $(HANDLER_XMLWRITER_SOURCES)
 	$(PARROT) $(PARROT_ARGS) -o xml/handler/xmlwriter.pbc xml/handler/xmlwriter.pir
 
 xml/handler/xmlwriter/gen_actions.pir: $(NQP) xml/handler/xmlwriter/pct/actions.pm
 	$(PARROT) $(PARROT_ARGS) $(NQP) --output=xml/handler/xmlwriter/gen_actions.pir \
 	    --target=pir xml/handler/xmlwriter/pct/actions.pm
-
-xml/handler/xmlwriter/gen_builtins.pir: $(HANDLER_XMLWRITER_BUILTINS_PIR)
-	$(CAT) $(HANDLER_XMLWRITER_BUILTINS_PIR) > xml/handler/xmlwriter/gen_builtins.pir
 
 Makefile: Makefile.in
 	$(PARROT) Configure.pir
