@@ -34,7 +34,7 @@ SAX_XML_SOURCES := \
   xml/sax/xml/gen_grammar.pir \
   xml/sax/xml/gen_actions.pir \
   xml/sax/xml/gen_builtins.pir \
-  xml/sax/xml/xml.pir
+  xml/sax/xml.pir
 
 SAX_XML_BUILTINS_PIR := \
   xml/sax/xml/builtins/char_ref.pir \
@@ -44,7 +44,7 @@ SAX_XML_BUILTINS_PIR := \
 HANDLER_XMLWRITER_SOURCES := \
   xml/handler/xmlwriter/gen_actions.pir \
   xml/handler/xmlwriter/gen_builtins.pir \
-  xml/handler/xmlwriter/xmlwriter.pir
+  xml/handler/xmlwriter.pir
 
 HANDLER_XMLWRITER_BUILTINS_PIR := \
   xml/handler/xmlwriter/builtins/escape.pir \
@@ -71,7 +71,7 @@ xml.pbc: xml.pir
 	$(PARROT) $(PARROT_ARGS) -o xml.pbc xml.pir
 
 xml/sax/xml.pbc: $(SAX_XML_SOURCES)
-	$(PARROT) $(PARROT_ARGS) -o xml/sax/xml.pbc xml/sax/xml/xml.pir
+	$(PARROT) $(PARROT_ARGS) -o xml/sax/xml.pbc xml/sax/xml.pir
 
 xml/sax/xml/gen_grammar.pir: $(PERL6GRAMMAR) xml/sax/xml/pct/grammar.pg
 	$(PARROT) $(PARROT_ARGS) $(PERL6GRAMMAR) \
@@ -86,7 +86,7 @@ xml/sax/xml/gen_builtins.pir: $(SAX_XML_BUILTINS_PIR)
 	$(CAT) $(SAX_XML_BUILTINS_PIR) > xml/sax/xml/gen_builtins.pir
 
 xml/handler/xmlwriter.pbc: $(HANDLER_XMLWRITER_SOURCES)
-	$(PARROT) $(PARROT_ARGS) -o xml/handler/xmlwriter.pbc xml/handler/xmlwriter/xmlwriter.pir
+	$(PARROT) $(PARROT_ARGS) -o xml/handler/xmlwriter.pbc xml/handler/xmlwriter.pir
 
 xml/handler/xmlwriter/gen_actions.pir: $(NQP) xml/handler/xmlwriter/pct/actions.pm
 	$(PARROT) $(PARROT_ARGS) $(NQP) --output=xml/handler/xmlwriter/gen_actions.pir \
