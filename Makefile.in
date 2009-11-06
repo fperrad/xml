@@ -54,24 +54,25 @@ HANDLER_XMLWRITER_BUILTINS_PIR := \
 DOCS := README
 
 BUILD_CLEANUPS := \
-  "sax/xml/*.pbc" \
+  "xml/sax/*.pbc" \
   "sax/xml/gen_*.pir" \
-  "handler/xmlwriter/*.pbc" \
+  "xml/handler/*.pbc" \
   "handler/xmlwriter/gen_*.pir" \
   "*.pbc" \
 #IF(win32):  parrot-xml.iss \
 #IF(win32):  "setup-parrot-*.exe" \
 
 # the default target
-build: xml.pbc sax/xml/xml.pbc handler/xmlwriter/xmlwriter.pbc
+build: xml.pbc xml/sax/xml.pbc xml/handler/xmlwriter.pbc
 
 all: build
 
 xml.pbc: xml.pir
 	$(PARROT) $(PARROT_ARGS) -o xml.pbc xml.pir
 
-sax/xml/xml.pbc: $(SAX_XML_SOURCES)
-	$(PARROT) $(PARROT_ARGS) -o sax/xml/xml.pbc sax/xml/xml.pir
+xml/sax/xml.pbc: $(SAX_XML_SOURCES)
+	$(MKPATH) xml/sax
+	$(PARROT) $(PARROT_ARGS) -o xml/sax/xml.pbc sax/xml/xml.pir
 
 sax/xml/gen_grammar.pir: $(PERL6GRAMMAR) sax/xml/pct/grammar.pg
 	$(PARROT) $(PARROT_ARGS) $(PERL6GRAMMAR) \
@@ -85,8 +86,9 @@ sax/xml/gen_actions.pir: $(NQP) sax/xml/pct/actions.pm
 sax/xml/gen_builtins.pir: $(SAX_XML_BUILTINS_PIR)
 	$(CAT) $(SAX_XML_BUILTINS_PIR) > sax/xml/gen_builtins.pir
 
-handler/xmlwriter/xmlwriter.pbc: $(HANDLER_XMLWRITER_SOURCES)
-	$(PARROT) $(PARROT_ARGS) -o handler/xmlwriter/xmlwriter.pbc handler/xmlwriter/xmlwriter.pir
+xml/handler/xmlwriter.pbc: $(HANDLER_XMLWRITER_SOURCES)
+	$(MKPATH) xml/handler
+	$(PARROT) $(PARROT_ARGS) -o xml/handler/xmlwriter.pbc handler/xmlwriter/xmlwriter.pir
 
 handler/xmlwriter/gen_actions.pir: $(NQP) handler/xmlwriter/pct/actions.pm
 	$(PARROT) $(PARROT_ARGS) $(NQP) --output=handler/xmlwriter/gen_actions.pir \
@@ -123,12 +125,15 @@ help:
 test: build
 	prove --exec=$(PARROT) t//*.t
 
-#install:
-#	-$(MKPATH) $(LIB_DIR)/languages/xml
-#	$(CP) xml.pbc $(LIB_DIR)/languages/xml/xml.pbc
+install:
+	-$(MKPATH) $(LIB_DIR)/library/xml/sax
+	$(CP) xml/sax/xml.pbc $(LIB_DIR)/library/xml/sax/xml.pbc
+	-$(MKPATH) $(LIB_DIR)/library/xml/handler
+	$(CP) xml/handler/xmlwriter.pbc $(LIB_DIR)/library/xml/handler/xmlwriter.pbc
 
-#uninstall:
-#	$(RM_RF) $(LIB_DIR)/languages/xml
+uninstall:
+	$(RM_F) $(LIB_DIR)/library/xml/sax/xml.pbc
+	$(RM_F) $(LIB_DIR)/library/xml/handler/xmlwriter.pbc
 
 testclean:
 

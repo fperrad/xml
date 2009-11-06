@@ -25,8 +25,8 @@ a simple handler
 .namespace []
 
 .sub 'onload' :anon :load :init
-    load_bytecode 'sax/xml/xml.pbc'
-    load_bytecode 'handler/xmlwriter/xmlwriter.pbc'
+    load_bytecode 'xml/sax/xml.pbc'
+    load_bytecode 'xml/handler/xmlwriter.pbc'
 .end
 
 .sub 'main' :main
