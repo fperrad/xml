@@ -62,10 +62,6 @@ BUILD_CLEANUPS := \
 #IF(win32):  parrot-xml.iss \
 #IF(win32):  "setup-parrot-*.exe" \
 
-TEST_CLEANUPS := \
-  "t/*.xml" \
-  "t/*.out"
-
 # the default target
 build: xml.pbc sax/xml/xml.pbc handler/xmlwriter/xmlwriter.pbc
 
@@ -125,23 +121,22 @@ help:
 	@echo ""
 
 test: build
-	$(PERL) -I$(LIB_DIR)/tools/lib t/harness
+	prove --exec=$(PARROT) t//*.t
 
-install:
-	-$(MKPATH) $(LIB_DIR)/languages/xml
-	$(CP) xml.pbc $(LIB_DIR)/languages/xml/xml.pbc
+#install:
+#	-$(MKPATH) $(LIB_DIR)/languages/xml
+#	$(CP) xml.pbc $(LIB_DIR)/languages/xml/xml.pbc
 
-uninstall:
-	$(RM_RF) $(LIB_DIR)/languages/xml
+#uninstall:
+#	$(RM_RF) $(LIB_DIR)/languages/xml
 
 testclean:
-	$(RM_F) $(TEST_CLEANUPS)
 
 clean:
-	$(RM_F) $(TEST_CLEANUPS) $(BUILD_CLEANUPS)
+	$(RM_F) $(BUILD_CLEANUPS)
 
 realclean:
-	$(RM_F) $(TEST_CLEANUPS) $(BUILD_CLEANUPS) Makefile
+	$(RM_F) $(BUILD_CLEANUPS) Makefile
 
 distclean: realclean
 

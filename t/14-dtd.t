@@ -1,50 +1,70 @@
-#! perl
+#! /usr/local/bin/parrot
 # Copyright (C) 2009, Parrot Foundation.
 
-=head1 Document Type Declaration
+=head1 XML Declaration
 
 =head2 Synopsis
 
-    % perl t/14-dtd.t
+    % parrot t/13-xmldecl.t
 
 =cut
 
-use strict;
-use warnings;
-use FindBin;
-use lib "$FindBin::Bin/../../../lib", "$FindBin::Bin";
+.sub 'main' :main
+    load_bytecode 'xml.pir'
 
-use Parrot::Test tests => 8;
-use Test::More;
+    .include 'test_more.pir'
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'system' );
+    plan(8)
+
+    test_system()
+    test_internal()
+    test_attlist_1()
+    test_attlist_2()
+    test_notation()
+    test_internal_entity()
+    test_external_entity()
+    test_parameter_entity()
+.end
+
+.sub 'test_system'
+     $S1 = <<'XML'
 <?xml version='1.0'?><!DOCTYPE greeting SYSTEM 'hello.dtd'><greeting>Hello, world!</greeting>
-CODE
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, <<'OUT', 'system')
 <?xml version="1.0"?>
 <!DOCTYPE greeting SYSTEM "hello.dtd">
 <greeting>Hello, world!</greeting>
 OUT
+.end
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'internal' );
+.sub 'test_internal'
+     $S1 = <<'XML'
 <?xml version='1.0'?><!DOCTYPE greeting [
     <!ELEMENT greeting (#PCDATA)>
 ] >
 <greeting>Hello, world!</greeting>
-CODE
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, <<'OUT', 'internal')
 <?xml version="1.0"?>
 <!DOCTYPE greeting [
   <!ELEMENT greeting (#PCDATA)>
 ]>
 <greeting>Hello, world!</greeting>
 OUT
+.end
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'attlist' );
+.sub 'test_attlist_1'
+     $S1 = <<'XML'
 <?xml version='1.0'?><!DOCTYPE greeting [
     <!ELEMENT greeting (#PCDATA)>
     <!ATTLIST greeting id ID #IMPLIED>
 ] >
 <greeting>Hello, world!</greeting>
-CODE
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, <<'OUT', 'attlist')
 <?xml version="1.0"?>
 <!DOCTYPE greeting [
   <!ELEMENT greeting (#PCDATA)>
@@ -52,8 +72,10 @@ CODE
 ]>
 <greeting>Hello, world!</greeting>
 OUT
+.end
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'attlist' );
+.sub 'test_attlist_2'
+     $S1 = <<'XML'
 <?xml version='1.0'?><!DOCTYPE form [
   <!ATTLIST termdef
             id      ID      #REQUIRED
@@ -64,7 +86,9 @@ language_output_is( 'xml', <<'CODE', <<'OUT', 'attlist' );
             method  CDATA   #FIXED "POST">
 ]>
 <form />
-CODE
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, <<'OUT', 'attlist')
 <?xml version="1.0"?>
 <!DOCTYPE form [
   <!ATTLIST termdef id ID #REQUIRED>
@@ -74,34 +98,44 @@ CODE
 ]>
 <form></form>
 OUT
+.end
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'notation' );
+.sub 'test_notation'
+     $S1 = <<'XML'
 <?xml version='1.0'?><!DOCTYPE greeting [
     <!NOTATION note SYSTEM "note.txt">
 ] >
 <greeting>Hello, world!</greeting>
-CODE
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, <<'OUT', 'notation')
 <?xml version="1.0"?>
 <!DOCTYPE greeting [
   <!NOTATION note SYSTEM "note.txt">
 ]>
 <greeting>Hello, world!</greeting>
 OUT
+.end
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'internal entity' );
+.sub 'test_internal_entity'
+     $S1 = <<'XML'
 <?xml version='1.0'?><!DOCTYPE greeting [
     <!ENTITY Pub-Status "This is a pre-release of the specification">
 ] >
 <greeting>Hello, world!</greeting>
-CODE
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, <<'OUT', 'internal entity')
 <?xml version="1.0"?>
 <!DOCTYPE greeting [
   <!ENTITY Pub-Status "This is a pre-release of the specification">
 ]>
 <greeting>Hello, world!</greeting>
 OUT
+.end
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'external entity & unparsed' );
+.sub 'test_external_entity'
+     $S1 = <<'XML'
 <?xml version='1.0'?><!DOCTYPE greeting [
     <!ENTITY open-hatch
              SYSTEM "http://www.textuality.com/boilerplate/OpenHatch.xml">
@@ -113,7 +147,9 @@ language_output_is( 'xml', <<'CODE', <<'OUT', 'external entity & unparsed' );
              NDATA gif >
 ] >
 <greeting>Hello, world!</greeting>
-CODE
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, <<'OUT', 'external entity & unparsed')
 <?xml version="1.0"?>
 <!DOCTYPE greeting [
   <!ENTITY open-hatch SYSTEM "http://www.textuality.com/boilerplate/OpenHatch.xml">
@@ -122,23 +158,28 @@ CODE
 ]>
 <greeting>Hello, world!</greeting>
 OUT
+.end
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'parameter entity' );
+.sub 'test_parameter_entity'
+     $S1 = <<'XML'
 <?xml version='1.0'?><!DOCTYPE greeting [
     <!ENTITY % core "abc">
 ] >
 <greeting>Hello, world!</greeting>
-CODE
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, <<'OUT', 'parameter entity')
 <?xml version="1.0"?>
 <!DOCTYPE greeting [
   <!ENTITY %core "abc">
 ]>
 <greeting>Hello, world!</greeting>
 OUT
+.end
 
 # Local Variables:
-#   mode: cperl
-#   cperl-indent-level: 4
+#   mode: pir
 #   fill-column: 100
 # End:
-# vim: expandtab shiftwidth=4:
+# vim: expandtab shiftwidth=4 ft=pir:
+

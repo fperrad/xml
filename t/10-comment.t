@@ -1,45 +1,49 @@
-#! perl
+#! /usr/local/bin/parrot
 # Copyright (C) 2009, Parrot Foundation.
 
 =head1 Comment
 
 =head2 Synopsis
 
-    % perl t/10-comment.t
+    % parrot t/10-comment.t
 
 =cut
 
-use strict;
-use warnings;
-use FindBin;
-use lib "$FindBin::Bin/../../../lib", "$FindBin::Bin";
+.sub 'main' :main
+    load_bytecode 'xml.pir'
 
-use Parrot::Test tests => 2;
-use Test::More;
+    .include 'test_more.pir'
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'some comments' );
+    plan(2)
+
+    test_1()
+    test_2()
+.end
+
+.sub 'test_1'
+     $S1 = <<'XML'
 <!-- first comment --><elt><!-- other comment --></elt><!-- final comment -->
-CODE
-<!-- first comment --><elt><!-- other comment --></elt><!-- final comment -->
-OUT
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, $S1, 'some comments')
+.end
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'some comments' );
+.sub 'test_2'
+     $S1 = <<'XML'
 <elt>
 <!--
     multi-line comment
 -->
 </elt>
-CODE
-<elt>
-<!--
-    multi-line comment
--->
-</elt>
-OUT
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, $S1, 'some comments')
+.end
+
 
 # Local Variables:
-#   mode: cperl
-#   cperl-indent-level: 4
+#   mode: pir
 #   fill-column: 100
 # End:
-# vim: expandtab shiftwidth=4:
+# vim: expandtab shiftwidth=4 ft=pir:
+

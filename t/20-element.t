@@ -1,68 +1,103 @@
-#! perl
+#! /usr/local/bin/parrot
 # Copyright (C) 2009, Parrot Foundation.
 
 =head1 Elements
 
 =head2 Synopsis
 
-    % perl t/20-element.t
+    % parrot t/20-element.t
 
 =cut
 
-use strict;
-use warnings;
-use FindBin;
-use lib "$FindBin::Bin/../../../lib", "$FindBin::Bin";
+.sub 'main' :main
+    load_bytecode 'xml.pir'
 
-use Parrot::Test tests => 7;
-use Test::More;
+    .include 'test_more.pir'
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'start/end' );
+    plan(7)
+
+    test_start_end()
+    test_start_end_with_attributes()
+    test_start_end_with_duplicated_attributes()
+    test_empty()
+    test_empty_with_attribute()
+    test_empty_with_duplicated_attributes()
+    test_unbalanced_start_end()
+.end
+
+.sub 'test_start_end'
+     $S1 = <<'XML'
 <elt  >content</elt  >
-CODE
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, <<'OUT', 'start/end')
 <elt>content</elt>
 OUT
+.end
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'start/end with attributes' );
+.sub 'test_start_end_with_attributes'
+     $S1 = <<'XML'
 <elt a="1" b='txt' >content</elt  >
-CODE
+XML
+     $S0 = 'xml_to_xml'($S1)
+     $I1 = $S0 == <<'OUT'
 <elt a="1" b="txt">content</elt>
 OUT
-
-language_output_like( 'xml', <<'CODE', <<'OUT', 'start/end with duplicated attributes' );
-<elt a="1" a='txt' >content</elt  >
-CODE
-/^duplicate attribute: a\n/
+     $I2 = $S0 == <<'OUT'
+<elt b="txt" a="1">content</elt>
 OUT
+    $I0 = $I1 || $I2
+    ok($I0, 'start/end with attributes')
+.end
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'empty' );
+.sub 'test_start_end_with_duplicated_attributes'
+     $S1 = <<'XML'
+<elt a="1" a='txt' >content</elt  >
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, "duplicate attribute: a", 'start/end with duplicated attributes')
+.end
+
+.sub 'test_empty'
+     $S1 = <<'XML'
 <elt  />
-CODE
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, <<'OUT', 'empty')
 <elt></elt>
 OUT
+.end
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'empty with attribute' );
+.sub 'test_empty_with_attribute'
+     $S1 = <<'XML'
 <elt a='1' />
-CODE
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, <<'OUT', 'empty with attribute')
 <elt a="1"></elt>
 OUT
+.end
 
-language_output_like( 'xml', <<'CODE', <<'OUT', 'empty with duplicated attributes' );
+.sub 'test_empty_with_duplicated_attributes'
+     $S1 = <<'XML'
 <elt a='1' a='2'/>
-CODE
-/^duplicate attribute: a\n/
-OUT
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, "duplicate attribute: a", 'empty with duplicated attributes')
+.end
 
-language_output_like( 'xml', <<'CODE', <<'OUT', 'unbalanced start/end' );
+.sub 'test_unbalanced_start_end'
+     $S1 = <<'XML'
 <a><b>content</c></a>
-CODE
-/^unbalanced end tag: c \(b expected\)\n/
-OUT
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, "unbalanced end tag: c (b expected)", 'unbalanced start/end')
+.end
 
 
 # Local Variables:
-#   mode: cperl
-#   cperl-indent-level: 4
+#   mode: pir
 #   fill-column: 100
 # End:
-# vim: expandtab shiftwidth=4:
+# vim: expandtab shiftwidth=4 ft=pir:
+

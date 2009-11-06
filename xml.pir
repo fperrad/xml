@@ -25,8 +25,8 @@ a simple handler
 .namespace []
 
 .sub 'onload' :anon :load :init
-    load_bytecode 'languages/xml/sax/xml/xml.pbc'
-    load_bytecode 'languages/xml/handler/xmlwriter/xmlwriter.pbc'
+    load_bytecode 'sax/xml/xml.pbc'
+    load_bytecode 'handler/xmlwriter/xmlwriter.pbc'
 .end
 
 .sub 'main' :main
@@ -52,6 +52,36 @@ a simple handler
     $S0 = stream.'readall'()
     stream.'close'()
     say $S0
+.end
+
+.sub 'xml_to_xml'
+    .param string data
+
+    .local pmc stream
+    stream = new 'StringHandle'
+    stream.'open'( 'xml', 'wr' )
+
+    .local pmc handler
+    handler = new ['Xml';'Handler';'XmlWriter']
+    handler.'stream'(stream)
+
+    .local pmc driver
+    driver = new [ 'Xml';'Sax';'Xml';'Compiler' ]
+    driver.'handler'(handler)
+    push_eh _handler
+    driver.'parse_string'(data)
+    pop_eh
+
+    $S0 = stream.'readall'()
+    $S0 .= "\n"
+    stream.'close'()
+    .return ($S0)
+
+  _handler:
+    .local pmc e
+    .get_results (e)
+    $S0 = e
+    .return ($S0)
 .end
 
 # Local Variables:

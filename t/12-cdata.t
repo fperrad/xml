@@ -1,37 +1,45 @@
-#! perl
+#! /usr/local/bin/parrot
 # Copyright (C) 2009, Parrot Foundation.
 
 =head1 CDATA Sections
 
 =head2 Synopsis
 
-    % perl t/12-cdata.t
+    % parrot t/12-cdata.t
 
 =cut
 
-use strict;
-use warnings;
-use FindBin;
-use lib "$FindBin::Bin/../../../lib", "$FindBin::Bin";
+.sub 'main' :main
+    load_bytecode 'xml.pir'
 
-use Parrot::Test tests => 2;
-use Test::More;
+    .include 'test_more.pir'
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'cdata' );
+    plan(2)
+
+    test_1()
+    test_2()
+.end
+
+.sub 'test_1'
+     $S1 = <<'XML'
 <elt><![CDATA[content]]></elt>
-CODE
-<elt><![CDATA[content]]></elt>
-OUT
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, $S1, 'cdata')
+.end
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'cdata' );
+.sub 'test_2'
+     $S1 = <<'XML'
 <elt><![CDATA[ <>&'" ]]></elt>
-CODE
-<elt><![CDATA[ <>&'" ]]></elt>
-OUT
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, $S1, 'cdata')
+.end
+
 
 # Local Variables:
-#   mode: cperl
-#   cperl-indent-level: 4
+#   mode: pir
 #   fill-column: 100
 # End:
-# vim: expandtab shiftwidth=4:
+# vim: expandtab shiftwidth=4 ft=pir:
+

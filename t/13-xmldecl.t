@@ -1,46 +1,63 @@
-#! perl
+#! /usr/local/bin/parrot
 # Copyright (C) 2009, Parrot Foundation.
 
 =head1 XML Declaration
 
 =head2 Synopsis
 
-    % perl t/13-xmldecl.t
+    % parrot t/13-xmldecl.t
 
 =cut
 
-use strict;
-use warnings;
-use FindBin;
-use lib "$FindBin::Bin/../../../lib", "$FindBin::Bin";
+.sub 'main' :main
+    load_bytecode 'xml.pir'
 
-use Parrot::Test tests => 3;
-use Test::More;
+    .include 'test_more.pir'
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'version' );
+    plan(3)
+
+    test_version()
+    test_encoding()
+    test_standalone()
+.end
+
+.sub 'test_version'
+     $S1 = <<'XML'
 <?xml version='1.0'?><elt>content</elt>
-CODE
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, <<'OUT', 'version')
 <?xml version="1.0"?>
 <elt>content</elt>
 OUT
+.end
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'encoding' );
+.sub 'test_encoding'
+     $S1 = <<'XML'
 <?xml version='1.0' encoding='utf-8'?><elt>content</elt>
-CODE
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, <<'OUT', 'encoding')
 <?xml version="1.0" encoding="utf-8"?>
 <elt>content</elt>
 OUT
+.end
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'standalone' );
+.sub 'test_standalone'
+     $S1 = <<'XML'
 <?xml version='1.0' standalone="yes"?><elt>content</elt>
-CODE
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, <<'OUT', 'standalone')
 <?xml version="1.0" standalone="yes"?>
 <elt>content</elt>
 OUT
+.end
+
 
 # Local Variables:
-#   mode: cperl
-#   cperl-indent-level: 4
+#   mode: pir
 #   fill-column: 100
 # End:
-# vim: expandtab shiftwidth=4:
+# vim: expandtab shiftwidth=4 ft=pir:
+

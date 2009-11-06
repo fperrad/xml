@@ -1,64 +1,89 @@
-#! perl
+#! /usr/local/bin/parrot
 # Copyright (C) 2009, Parrot Foundation.
 
 =head1 Entities
 
 =head2 Synopsis
 
-    % perl t/30-entity.t
+    % parrot t/30-entity.t
 
 =cut
 
-use strict;
-use warnings;
-use FindBin;
-use lib "$FindBin::Bin/../../../lib", "$FindBin::Bin";
+.sub 'main' :main
+    load_bytecode 'xml.pir'
 
-use Parrot::Test tests => 5;
-use Test::More;
+    .include 'test_more.pir'
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'prefined entity' );
+    plan(5)
+
+    test_prefined_entity()
+    test_character_reference_dec()
+    test_character_reference_hex()
+    test_internal_entity()
+    test_in_attribute()
+.end
+
+.sub 'test_prefined_entity'
+     $S1 = <<'XML'
 <elt>2 &gt; 1</elt>
-CODE
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, <<'OUT', 'prefined entity')
 <elt>2 &gt; 1</elt>
 OUT
+.end
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'character reference (dec)' );
+.sub 'test_character_reference_dec'
+     $S1 = <<'XML'
 <elt> &#65; </elt>
-CODE
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, <<'OUT', 'character reference (dec)')
 <elt> A </elt>
 OUT
+.end
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'character reference (hex)' );
+.sub 'test_character_reference_hex'
+     $S1 = <<'XML'
 <elt> &#x41; </elt>
-CODE
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, <<'OUT', 'character reference (hex)')
 <elt> A </elt>
 OUT
+.end
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'internal entity' );
+.sub 'test_internal_entity'
+     $S1 = <<'XML'
 <?xml version='1.0'?><!DOCTYPE status [
     <!ENTITY Pub-Status "This is a pre-release of the specification">
 ] >
 <status>&Pub-Status;</status>
-CODE
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, <<'OUT', 'internal entity')
 <?xml version="1.0"?>
 <!DOCTYPE status [
   <!ENTITY Pub-Status "This is a pre-release of the specification">
 ]>
 <status>&Pub-Status;</status>
 OUT
+.end
 
-language_output_is( 'xml', <<'CODE', <<'OUT', 'in attribute' );
+.sub 'test_in_attribute'
+     $S1 = <<'XML'
 <elt a="&#x31; &gt; &#48;"> &lt; </elt>
-CODE
+XML
+     $S0 = 'xml_to_xml'($S1)
+     is($S0, <<'OUT', 'in attribute')
 <elt a="1 &gt; 0"> &lt; </elt>
 OUT
-
+.end
 
 
 # Local Variables:
-#   mode: cperl
-#   cperl-indent-level: 4
+#   mode: pir
 #   fill-column: 100
 # End:
-# vim: expandtab shiftwidth=4:
+# vim: expandtab shiftwidth=4 ft=pir:
+
