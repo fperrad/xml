@@ -115,8 +115,8 @@ to the Xml compiler.
 .end
 
 .include 'xml/sax/xml/builtins.pir'
-.include 'xml/sax/xml/gen_grammar.pir'
-.include 'xml/sax/xml/gen_actions.pir'
+.include 'xml/sax/xml/grammar_gen.pir'
+.include 'xml/sax/xml/actions_gen.pir'
 
 =back
 

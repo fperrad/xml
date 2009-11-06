@@ -1,7 +1,4 @@
 Makefile
 
 *.pbc
-gen_*.pir
-
-*.xml
-*.out
+*_gen.pir

@@ -30,8 +30,8 @@ PARROT        := $(BIN_DIR)/parrot@exe@
 #IF(darwin):export MACOSX_DEPLOYMENT_TARGET := @osx_version@
 
 SAX_XML_SOURCES := \
-  xml/sax/xml/gen_grammar.pir \
-  xml/sax/xml/gen_actions.pir \
+  xml/sax/xml/grammar_gen.pir \
+  xml/sax/xml/actions_gen.pir \
   xml/sax/xml/builtins.pir \
   xml/sax/xml/builtins/char_ref.pir \
   xml/sax/xml/builtins/fire.pir \
@@ -39,7 +39,7 @@ SAX_XML_SOURCES := \
   xml/sax/xml.pir
 
 HANDLER_XMLWRITER_SOURCES := \
-  xml/handler/xmlwriter/gen_actions.pir \
+  xml/handler/xmlwriter/actions_gen.pir \
   xml/handler/xmlwriter/builtins.pir \
   xml/handler/xmlwriter/builtins/escape.pir \
   xml/handler/xmlwriter/builtins/print.pir \
@@ -50,9 +50,9 @@ DOCS := README
 
 BUILD_CLEANUPS := \
   "xml/sax/*.pbc" \
-  "xml/sax/xml/gen_*.pir" \
+  "xml/sax/xml/*_gen.pir" \
   "xml/handler/*.pbc" \
-  "xml/handler/xmlwriter/gen_*.pir" \
+  "xml/handler/xmlwriter/*_gen.pir" \
   "*.pbc" \
 #IF(win32):  parrot-xml.iss \
 #IF(win32):  "setup-parrot-*.exe" \
@@ -68,21 +68,21 @@ xml.pbc: xml.pir
 xml/sax/xml.pbc: $(SAX_XML_SOURCES)
 	$(PARROT) $(PARROT_ARGS) -o xml/sax/xml.pbc xml/sax/xml.pir
 
-xml/sax/xml/gen_grammar.pir: $(PERL6GRAMMAR) xml/sax/xml/pct/grammar.pg
+xml/sax/xml/grammar_gen.pir: $(PERL6GRAMMAR) xml/sax/xml/grammar.pg
 	$(PARROT) $(PARROT_ARGS) $(PERL6GRAMMAR) \
-	    --output=xml/sax/xml/gen_grammar.pir \
-	    xml/sax/xml/pct/grammar.pg
+	    --output=xml/sax/xml/grammar_gen.pir \
+	    xml/sax/xml/grammar.pg
 
-xml/sax/xml/gen_actions.pir: $(NQP) xml/sax/xml/pct/actions.pm
-	$(PARROT) $(PARROT_ARGS) $(NQP) --output=xml/sax/xml/gen_actions.pir \
-	    --target=pir xml/sax/xml/pct/actions.pm
+xml/sax/xml/actions_gen.pir: $(NQP) xml/sax/xml/actions.pm
+	$(PARROT) $(PARROT_ARGS) $(NQP) --output=xml/sax/xml/actions_gen.pir \
+	    --target=pir xml/sax/xml/actions.pm
 
 xml/handler/xmlwriter.pbc: $(HANDLER_XMLWRITER_SOURCES)
 	$(PARROT) $(PARROT_ARGS) -o xml/handler/xmlwriter.pbc xml/handler/xmlwriter.pir
 
-xml/handler/xmlwriter/gen_actions.pir: $(NQP) xml/handler/xmlwriter/pct/actions.pm
-	$(PARROT) $(PARROT_ARGS) $(NQP) --output=xml/handler/xmlwriter/gen_actions.pir \
-	    --target=pir xml/handler/xmlwriter/pct/actions.pm
+xml/handler/xmlwriter/actions_gen.pir: $(NQP) xml/handler/xmlwriter/actions.pm
+	$(PARROT) $(PARROT_ARGS) $(NQP) --output=xml/handler/xmlwriter/actions_gen.pir \
+	    --target=pir xml/handler/xmlwriter/actions.pm
 
 Makefile: Makefile.in
 	$(PARROT) Configure.pir

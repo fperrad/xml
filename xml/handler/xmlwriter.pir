@@ -21,7 +21,7 @@
 .end
 
 .include 'xml/handler/xmlwriter/builtins.pir'
-.include 'xml/handler/xmlwriter/gen_actions.pir'
+.include 'xml/handler/xmlwriter/actions_gen.pir'
 
 # Local Variables:
 #   mode: pir
