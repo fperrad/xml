@@ -114,9 +114,9 @@ to the Xml compiler.
     $P1 = $P0.'command_line'(args)
 .end
 
-.include 'sax/xml/gen_builtins.pir'
-.include 'sax/xml/gen_grammar.pir'
-.include 'sax/xml/gen_actions.pir'
+.include 'xml/sax/xml/gen_builtins.pir'
+.include 'xml/sax/xml/gen_grammar.pir'
+.include 'xml/sax/xml/gen_actions.pir'
 
 =back
 

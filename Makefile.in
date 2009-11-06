@@ -31,33 +31,33 @@ PARROT        := $(BIN_DIR)/parrot@exe@
 #IF(darwin):export MACOSX_DEPLOYMENT_TARGET := @osx_version@
 
 SAX_XML_SOURCES := \
-  sax/xml/gen_grammar.pir \
-  sax/xml/gen_actions.pir \
-  sax/xml/gen_builtins.pir \
-  sax/xml/xml.pir
+  xml/sax/xml/gen_grammar.pir \
+  xml/sax/xml/gen_actions.pir \
+  xml/sax/xml/gen_builtins.pir \
+  xml/sax/xml/xml.pir
 
 SAX_XML_BUILTINS_PIR := \
-  sax/xml/builtins/char_ref.pir \
-  sax/xml/builtins/fire.pir \
-  sax/xml/builtins/normalize.pir
+  xml/sax/xml/builtins/char_ref.pir \
+  xml/sax/xml/builtins/fire.pir \
+  xml/sax/xml/builtins/normalize.pir
 
 HANDLER_XMLWRITER_SOURCES := \
-  handler/xmlwriter/gen_actions.pir \
-  handler/xmlwriter/gen_builtins.pir \
-  handler/xmlwriter/xmlwriter.pir
+  xml/handler/xmlwriter/gen_actions.pir \
+  xml/handler/xmlwriter/gen_builtins.pir \
+  xml/handler/xmlwriter/xmlwriter.pir
 
 HANDLER_XMLWRITER_BUILTINS_PIR := \
-  handler/xmlwriter/builtins/escape.pir \
-  handler/xmlwriter/builtins/print.pir \
-  handler/xmlwriter/builtins/throw.pir
+  xml/handler/xmlwriter/builtins/escape.pir \
+  xml/handler/xmlwriter/builtins/print.pir \
+  xml/handler/xmlwriter/builtins/throw.pir
 
 DOCS := README
 
 BUILD_CLEANUPS := \
   "xml/sax/*.pbc" \
-  "sax/xml/gen_*.pir" \
+  "xml/sax/xml/gen_*.pir" \
   "xml/handler/*.pbc" \
-  "handler/xmlwriter/gen_*.pir" \
+  "xml/handler/xmlwriter/gen_*.pir" \
   "*.pbc" \
 #IF(win32):  parrot-xml.iss \
 #IF(win32):  "setup-parrot-*.exe" \
@@ -71,31 +71,29 @@ xml.pbc: xml.pir
 	$(PARROT) $(PARROT_ARGS) -o xml.pbc xml.pir
 
 xml/sax/xml.pbc: $(SAX_XML_SOURCES)
-	$(MKPATH) xml/sax
-	$(PARROT) $(PARROT_ARGS) -o xml/sax/xml.pbc sax/xml/xml.pir
+	$(PARROT) $(PARROT_ARGS) -o xml/sax/xml.pbc xml/sax/xml/xml.pir
 
-sax/xml/gen_grammar.pir: $(PERL6GRAMMAR) sax/xml/pct/grammar.pg
+xml/sax/xml/gen_grammar.pir: $(PERL6GRAMMAR) xml/sax/xml/pct/grammar.pg
 	$(PARROT) $(PARROT_ARGS) $(PERL6GRAMMAR) \
-	    --output=sax/xml/gen_grammar.pir \
-	    sax/xml/pct/grammar.pg
+	    --output=xml/sax/xml/gen_grammar.pir \
+	    xml/sax/xml/pct/grammar.pg
 
-sax/xml/gen_actions.pir: $(NQP) sax/xml/pct/actions.pm
-	$(PARROT) $(PARROT_ARGS) $(NQP) --output=sax/xml/gen_actions.pir \
-	    --target=pir sax/xml/pct/actions.pm
+xml/sax/xml/gen_actions.pir: $(NQP) xml/sax/xml/pct/actions.pm
+	$(PARROT) $(PARROT_ARGS) $(NQP) --output=xml/sax/xml/gen_actions.pir \
+	    --target=pir xml/sax/xml/pct/actions.pm
 
-sax/xml/gen_builtins.pir: $(SAX_XML_BUILTINS_PIR)
-	$(CAT) $(SAX_XML_BUILTINS_PIR) > sax/xml/gen_builtins.pir
+xml/sax/xml/gen_builtins.pir: $(SAX_XML_BUILTINS_PIR)
+	$(CAT) $(SAX_XML_BUILTINS_PIR) > xml/sax/xml/gen_builtins.pir
 
 xml/handler/xmlwriter.pbc: $(HANDLER_XMLWRITER_SOURCES)
-	$(MKPATH) xml/handler
-	$(PARROT) $(PARROT_ARGS) -o xml/handler/xmlwriter.pbc handler/xmlwriter/xmlwriter.pir
+	$(PARROT) $(PARROT_ARGS) -o xml/handler/xmlwriter.pbc xml/handler/xmlwriter/xmlwriter.pir
 
-handler/xmlwriter/gen_actions.pir: $(NQP) handler/xmlwriter/pct/actions.pm
-	$(PARROT) $(PARROT_ARGS) $(NQP) --output=handler/xmlwriter/gen_actions.pir \
-	    --target=pir handler/xmlwriter/pct/actions.pm
+xml/handler/xmlwriter/gen_actions.pir: $(NQP) xml/handler/xmlwriter/pct/actions.pm
+	$(PARROT) $(PARROT_ARGS) $(NQP) --output=xml/handler/xmlwriter/gen_actions.pir \
+	    --target=pir xml/handler/xmlwriter/pct/actions.pm
 
-handler/xmlwriter/gen_builtins.pir: $(HANDLER_XMLWRITER_BUILTINS_PIR)
-	$(CAT) $(HANDLER_XMLWRITER_BUILTINS_PIR) > handler/xmlwriter/gen_builtins.pir
+xml/handler/xmlwriter/gen_builtins.pir: $(HANDLER_XMLWRITER_BUILTINS_PIR)
+	$(CAT) $(HANDLER_XMLWRITER_BUILTINS_PIR) > xml/handler/xmlwriter/gen_builtins.pir
 
 Makefile: Makefile.in
 	$(PARROT) Configure.pir

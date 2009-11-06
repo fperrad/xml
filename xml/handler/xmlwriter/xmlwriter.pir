@@ -20,8 +20,8 @@
     .return (value)
 .end
 
-.include 'handler/xmlwriter/gen_builtins.pir'
-.include 'handler/xmlwriter/gen_actions.pir'
+.include 'xml/handler/xmlwriter/gen_builtins.pir'
+.include 'xml/handler/xmlwriter/gen_actions.pir'
 
 # Local Variables:
 #   mode: pir
