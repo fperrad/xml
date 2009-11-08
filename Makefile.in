@@ -62,9 +62,6 @@ build: xml.pbc xml/sax/xml.pbc xml/handler/xmlwriter.pbc
 
 all: build
 
-xml.pbc: xml.pir
-	$(PARROT) $(PARROT_ARGS) -o xml.pbc xml.pir
-
 xml/sax/xml.pbc: $(SAX_XML_SOURCES)
 	$(PARROT) $(PARROT_ARGS) -o xml/sax/xml.pbc xml/sax/xml.pir
 
