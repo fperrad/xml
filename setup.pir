@@ -27,10 +27,12 @@ No Configure step, no Makefile generated.
     $P1 = new 'Hash'
     $P1['xml/sax/xml/grammar_gen.pir'] = 'xml/sax/xml/grammar.pg'
     $P0['pir_pge'] = $P1
+
     $P2 = new 'Hash'
     $P2['xml/sax/xml/actions_gen.pir'] = 'xml/sax/xml/actions.pm'
     $P2['xml/handler/xmlwriter/actions_gen.pir'] = 'xml/handler/xmlwriter/actions.pm'
     $P0['pir_nqp'] = $P2
+
     $P3 = new 'Hash'
     $P4 = split "\n", <<'SOURCES'
 xml/sax/xml.pir
@@ -52,12 +54,15 @@ xml/handler/xmlwriter/builtins/throw.pir
 SOURCES
     $P3['xml/handler/xmlwriter.pbc'] = $P5
     $P0['pbc_pir'] = $P3
+
     # test
     $S0 = get_parrot()
     $P0['prove_exec'] = $S0
+
     # install
     $P6 = split ' ', 'xml/sax/xml.pbc xml/handler/xmlwriter.pbc'
     $P0['inst_lib'] = $P6
+
     .tailcall setup(args :flat, $P0 :flat :named)
 .end
 
