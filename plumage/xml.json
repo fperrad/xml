@@ -37,7 +37,7 @@
             "fetch"    : ["git"],
             "configure": [],
             "build"    : [],
-            "test"     : ["perl"],
+            "test"     : ["perl5"],
             "install"  : [],
             "runtime"  : []
         }
