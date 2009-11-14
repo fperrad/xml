@@ -29,9 +29,9 @@ No Configure step, no Makefile generated.
     $P0['pir_pge'] = $P1
 
     $P2 = new 'Hash'
-    $P2['xml/sax/xml/actions_gen.pir'] = 'xml/sax/xml/actions.pm'
-    $P2['xml/handler/xmlwriter/actions_gen.pir'] = 'xml/handler/xmlwriter/actions.pm'
-    $P0['pir_nqp'] = $P2
+    $P2['xml/sax/xml/actions_gen.pir'] = 'xml/sax/xml/actions.nqp'
+    $P2['xml/handler/xmlwriter/actions_gen.pir'] = 'xml/handler/xmlwriter/actions.nqp'
+    $P0['pir_nqp-rx'] = $P2
 
     $P3 = new 'Hash'
     $P4 = split "\n", <<'SOURCES'
