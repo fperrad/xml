@@ -14,7 +14,7 @@
         },
         "copyright_holder" : "Parrot Foundation",
         "generated_by"     : "Francois Perrad <francois.perrad@gadz.org>",
-        "keywords"         : ["xml"],
+        "keywords"         : ["xml", "sax"],
         "description"      : "some toys: a SAX like parser & a simple handler XmlWriter"
     },
     "instructions" : {
@@ -32,10 +32,9 @@
         }
     },
     "dependency-info"  : {
-        "provides"     : ["Xml;Sax;Xml", "Xml;Handler;XmlWriter"],
+        "provides"     : ["xml"],
         "requires"     : {
             "fetch"    : ["git"],
-            "configure": [],
             "build"    : [],
             "test"     : ["perl5"],
             "install"  : [],
@@ -51,3 +50,5 @@
         }
     }
 }
+
+
