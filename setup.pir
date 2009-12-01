@@ -1,4 +1,4 @@
-#! /usr/local/bin/parrot
+#!/usr/bin/env parrot
 # Copyright (C) 2009, Parrot Foundation.
 
 =head1 NAME
@@ -32,7 +32,6 @@ No Configure step, no Makefile generated.
     $P0['license_type'] = 'Artistic License 2.0'
     $P0['license_uri'] = 'http://www.perlfoundation.org/artistic_license_2_0'
     $P0['copyright_holder'] = 'Parrot Foundation'
-    $P0['generated_by'] = 'Francois Perrad <francois.perrad@gadz.org>'
     $P0['checkout_uri'] = 'git://github.com/fperrad/xml.git'
     $P0['browser_uri'] = 'http://github.com/fperrad/xml'
     $P0['project_uri'] = 'http://github.com/fperrad/xml'
@@ -76,6 +75,9 @@ SOURCES
     # install
     $P6 = split ' ', 'xml/sax/xml.pbc xml/handler/xmlwriter.pbc'
     $P0['inst_lib'] = $P6
+
+    # dist
+    $P0['manifest_includes'] = 'xml.pir'
 
     .tailcall setup(args :flat, $P0 :flat :named)
 .end
