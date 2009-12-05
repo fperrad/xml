@@ -1,21 +1,16 @@
 # Copyright (C) 2009, Parrot Foundation.
 
-=pod
-
-This is the grammar for Xml written as a sequence of Perl 6 rules.
-
-See Extensible Markup Language (XML) 1.0,
-L<http://www.w3.org/TR/2000/REC-xml-20001006>
-
-=cut
+#
+# This is the grammar for Xml written as a sequence of Perl 6 rules.
+#
+# See Extensible Markup Language (XML) 1.0,
+# http://www.w3.org/TR/2000/REC-xml-20001006
+#
 
 grammar Xml::Sax::Xml::Grammar is PCT::Grammar;
 
-=head1 Documents
-
-=head2 Well-Formed XML Documents
-
-=cut
+# 2.    Documents
+# 2.1.  Well-Formed XML Documents
 
 token TOP {
     ^ <document>
@@ -30,18 +25,14 @@ token document {
     {*}                         #= end_document
 }
 
-=head2 Characters
-
-=cut
+# 2.2.  Characters
 
 # 2
 token Char {
     <[\x9\xA\xD\x20..\xFF]>
 }
 
-=head2 Common Syntactic Construct
-
-=cut
+# 2.3.  Common Syntactic Constructs
 
 # 3
 token S {
@@ -103,9 +94,7 @@ token PubidLiteral {
     | \' ( <[a..zA..Z0..9\x20\xD\xA\-()+,./:=?;!*#@$_%]>* ) \'
 }
 
-=head2 Character Data and Markup
-
-=cut
+# 2.4.  Character Data and Markup
 
 # 14
 token CharData {
@@ -113,9 +102,7 @@ token CharData {
     {*}
 }
 
-=head2 Comments
-
-=cut
+# 2.5.  Comments
 
 # 15
 token Comment {
@@ -127,9 +114,7 @@ token _hyphen {
     '-'
 }
 
-=head2 Processing Instruction
-
-=cut
+# 2.6.  Processing Instruction
 
 # 16
 token PI {
@@ -146,9 +131,7 @@ token PITarget {
 
 token _xml { <[Xx]> <[Mm]> <[Ll]> }
 
-=head2 CDATA Sections
-
-=cut
+# 2.7.  CDATA Sections
 
 # 18
 token CDSect {
@@ -166,9 +149,7 @@ token CDEnd {
     ']]>'
 }
 
-=head2 Prolog and Document Type Declaration
-
-=cut
+# 2.8.  Prolog and Document Type Declaration
 
 # 22
 token prolog {
@@ -234,9 +215,7 @@ token extSubsetDecl {
     [ <markupdecl> | <conditionalSect> | <DeclSep> ]*
 }
 
-=head2 Standalone Document Declaration
-
-=cut
+# 2.9.  Standalone Document Declaration
 
 # 32
 token SDDecl {
@@ -247,9 +226,7 @@ token _yes_no {
     [yes|no]
 }
 
-=head1 Logical Structures
-
-=cut
+# 3.    Logical Structures
 
 # 39
 token element {
@@ -257,9 +234,7 @@ token element {
     | <STag> <content> <ETag>
 }
 
-=head2 Start-Tags, End-Tags, and Empty-Element Tags
-
-=cut
+# 3.1.  Start-Tags, End-Tags, and Empty-Element Tags
 
 # 40
 token STag {
@@ -289,9 +264,7 @@ token EmptyElemTag {
     {*}
 }
 
-=head2 Element Type Declararions
-
-=cut
+# 3.2.  Element Type Declarations
 
 # 45
 token elementdecl {
@@ -330,9 +303,7 @@ token Mixed {
     | '(' <.S>? '#PCDATA' <.S>? ')'
 }
 
-=head2 Attribute-List Declarations
-
-=cut
+# 3.3.  Attribute-List Declarations
 
 # 52
 token AttlistDecl {
@@ -380,9 +351,7 @@ token DefaultDecl {
     '#REQUIRED' | '#IMPLIED' | [ ( '#FIXED' ) <.S> ]? <AttValue>
 }
 
-=head2 Conditional Sections
-
-=cut
+# 3.4.  Conditional Sections
 
 # 61
 token conditionalSect {
@@ -413,11 +382,8 @@ token _Ignore {
     '<![' | ']]>'
 }
 
-=head1 Physical Structures
-
-=head2 Character and Entity References
-
-=cut
+# 4.    Physical Structures
+# 4.1.  Character and Entity References
 
 # 66
 token CharRef {
@@ -441,9 +407,7 @@ token PEReference {
     '%' <Name> ';'
 }
 
-=head2 Entity Declarations
-
-=cut
+# 4.2.  Entity Declarations
 
 # 70
 token EntityDecl {
@@ -483,9 +447,7 @@ token NDataDecl {
     <.S> 'NDATA' <.S> <Name>
 }
 
-=head2 Parsed Entities
-
-=cut
+# 4.3.  Parsed Entities
 
 # 77
 token TextDecl {
@@ -507,9 +469,7 @@ token EncName {
     <[A..Za..z]> <[A..Za..z0..9._\-]>*
 }
 
-=head2 Notation Declarations
-
-=cut
+# 4.7.  Notation Declarations
 
 # 82
 token NotationDecl {
