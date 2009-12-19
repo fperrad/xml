@@ -78,6 +78,7 @@ SOURCES
 
     # dist
     $P0['manifest_includes'] = 'xml.pir'
+    $P0['doc_files'] = 'README'
 
     .tailcall setup(args :flat, $P0 :flat :named)
 .end
